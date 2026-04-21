@@ -1557,9 +1557,9 @@ StatUtils.Mean(arr);</pre>
 
 <!-- ЛР 9–12 вопросы из лабораторных загружаются динамически -->
 <div id="lr9-12-questions"></div>
-  
+
 <script>
-// Загружаем дополнительные вопросы из questions.html //
+// Загружаем дополнительные вопросы из questions.html
 fetch('questions.html')
   .then(res => res.text())
   .then(html => {
@@ -1575,15 +1575,34 @@ function toggle(header) {
   header.parentElement.classList.toggle('open');
 }
 
+// Множественный выбор вкладок
+const activeLrs = new Set(['all']);
+
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
     const lr = tab.dataset.lr;
-    document.querySelectorAll('.section').forEach(sec => {
-      if (lr === 'all' || sec.dataset.lr === lr) sec.classList.remove('hidden');
-      else sec.classList.add('hidden');
+
+    if (lr === 'all') {
+      // Кнопка «Все» — сбрасывает всё, показывает всё
+      activeLrs.clear();
+      activeLrs.add('all');
+    } else {
+      // Убираем «Все» при выборе конкретной ЛР
+      activeLrs.delete('all');
+      if (activeLrs.has(lr)) {
+        activeLrs.delete(lr);
+        // Если ничего не осталось — возвращаем «Все»
+        if (activeLrs.size === 0) activeLrs.add('all');
+      } else {
+        activeLrs.add(lr);
+      }
+    }
+
+    // Обновляем визуальное состояние кнопок
+    document.querySelectorAll('.tab').forEach(t => {
+      t.classList.toggle('active', activeLrs.has(t.dataset.lr));
     });
+
     filterSearch();
   });
 });
@@ -1593,10 +1612,11 @@ const noResults = document.getElementById('no-results');
 
 function filterSearch() {
   const q = searchEl.value.toLowerCase().trim();
-  const activeLr = document.querySelector('.tab.active').dataset.lr;
+  const showAll = activeLrs.has('all');
   let visible = 0;
+
   document.querySelectorAll('.section').forEach(sec => {
-    const lrMatch = activeLr === 'all' || sec.dataset.lr === activeLr;
+    const lrMatch = showAll || activeLrs.has(sec.dataset.lr);
     if (!lrMatch) { sec.classList.add('hidden'); return; }
     if (!q) { sec.classList.remove('hidden'); visible++; return; }
     if (sec.innerText.toLowerCase().includes(q)) {
