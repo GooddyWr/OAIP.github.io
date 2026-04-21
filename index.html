@@ -21,6 +21,7 @@
     --accent-10: #06b6d4;
     --accent-11: #a855f7;
     --accent-12: #22c55e;
+    --accent-trpo: #f472b6;
     --text: #e8eaf0;
     --muted: #7a7f94;
     --code-bg: #0a0c10;
@@ -151,6 +152,8 @@
   .lr-10 { background: rgba(6,182,212,.15);   color: var(--accent-10); }
   .lr-11 { background: rgba(168,85,247,.15);  color: var(--accent-11); }
   .lr-12 { background: rgba(34,197,94,.15);   color: var(--accent-12); }
+  .lr-trpo { background: rgba(244,114,182,.15); color: var(--accent-trpo); }
+  .tab[data-lr="trpo"].active { background: var(--accent-trpo); }
 
   .chevron { color: var(--muted); transition: transform .25s; flex-shrink: 0; }
   .section.open .chevron { transform: rotate(180deg); }
@@ -326,6 +329,7 @@
       <button class="tab" data-lr="10">ЛР 10 · Файлы</button>
       <button class="tab" data-lr="11">ЛР 11 · Указатели</button>
       <button class="tab" data-lr="12">ЛР 12 · Модули</button>
+      <button class="tab" data-lr="trpo">ЛР7-8 ТРПО · Графика Lazarus</button>
     </div>
   </div>
 </header>
@@ -1597,6 +1601,473 @@ StatUtils.Mean(arr);</pre>
 </div>
 
 <div id="inject-lr12"></div>
+
+<!-- ══════════════════════════════════════════
+     ЛР7-8 ТРПО — ОСНОВЫ РАЗРАБОТКИ ГРАФИЧЕСКИХ ПРИЛОЖЕНИЙ
+══════════════════════════════════════════ -->
+
+<div class="section" data-lr="trpo">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
+    <span class="section-title">Визуальное программирование в Lazarus — основы</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое визуальное программирование?</div>
+      <div class="answer">Ты берёшь готовые компоненты из библиотеки <b>LCL</b>, перетаскиваешь их на форму, настраиваешь свойства и пишешь обработчики событий. Каждый компонент — это класс. <code>TLabel</code>, <code>TButton</code>, <code>TEdit</code> — всё это классы.</div>
+
+      <div class="question">Как создать новый проект в Lazarus?</div>
+      <div class="answer">
+        <div class="tip">Меню → <b>Проект → Создать проект → Приложение</b>. Каждый пример — отдельный проект в отдельной папке!</div>
+      </div>
+
+      <div class="question">Что такое Инспектор объектов?</div>
+      <div class="answer">Панель слева в Lazarus. Показывает <b>свойства</b> (вкладка Properties) и <b>события</b> (вкладка Events) выбранного компонента. Двойной клик по событию — Lazarus создаёт пустой обработчик автоматически.</div>
+
+      <div class="question">Чем отличаются свойства от событий?</div>
+      <div class="answer"><b>Свойства</b> — внешний вид и состояние: размер, цвет, текст, доступность. <b>События</b> — поведение: что происходит при клике, наведении, создании формы.</div>
+
+      <div class="question">Что такое обработчик события?</div>
+      <div class="answer">Процедура, которая выполняется когда что-то случается — пользователь нажал кнопку, ввёл текст, форма открылась. Пишется программистом.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="trpo">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
+    <span class="section-title">Компоненты кнопок: TButton, TBitBtn, TSpeedButton</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое TButton и его ключевые свойства?</div>
+      <div class="answer">Обычная кнопка. Страница <b>Standard</b>.
+        <table>
+          <tr><th>Свойство</th><th>Что делает</th></tr>
+          <tr><td>Caption</td><td>Текст на кнопке</td></tr>
+          <tr><td>Enabled</td><td>True = доступна, False = серая/заблокирована</td></tr>
+          <tr><td>Visible</td><td>True = видна, False = скрыта</td></tr>
+          <tr><td>Default</td><td>True = Enter работает как клик</td></tr>
+          <tr><td>Cancel</td><td>True = Escape работает как клик</td></tr>
+        </table>
+      </div>
+
+      <div class="question">Что такое TBitBtn — кнопка с иконкой?</div>
+      <div class="answer">Страница <b>Additional</b>. Всё что есть в TButton плюс:
+        <table>
+          <tr><th>Свойство</th><th>Что делает</th></tr>
+          <tr><td>Kind</td><td>Готовый тип: bkOK, bkCancel, bkClose, bkYes, bkNo, bkHelp и др.</td></tr>
+          <tr><td>Glyph</td><td>Своя иконка — путь к файлу рисунка</td></tr>
+          <tr><td>Layout</td><td>Положение иконки: blGlyphLeft, blGlyphRight, blGlyphTop, blGlyphBottom</td></tr>
+          <tr><td>Margin</td><td>Отступ от края до иконки в пикселах (по умолч. 1)</td></tr>
+          <tr><td>Spacing</td><td>Расстояние между иконкой и текстом в пикселах</td></tr>
+        </table>
+        <div class="tip">Типы Kind: <code>bkAbort</code> «Прервать», <code>bkAll</code> «Все», <code>bkCancel</code> «Отмена», <code>bkClose</code> «Закрыть», <code>bkCustom</code> (свой), <code>bkHelp</code> «Справка», <code>bkIgnore</code> «Пропуск», <code>bkNo/bkYes</code> «Нет/Да», <code>bkOK</code> «ОК», <code>bkRetry</code> «Повтор»</div>
+      </div>
+
+      <div class="question">Что такое TSpeedButton — быстрая кнопка с фиксацией?</div>
+      <div class="answer">Страница <b>Additional</b>. Используется в панелях инструментов. Умеет фиксироваться в нажатом состоянии.
+        <table>
+          <tr><th>Свойство</th><th>Что делает</th></tr>
+          <tr><td>GroupIndex</td><td>0 = обычная кнопка; &gt;0 = кнопка фиксируется при нажатии</td></tr>
+          <tr><td>AllowAllUp</td><td>True = повторный клик отпускает кнопку</td></tr>
+          <tr><td>Down</td><td>True = кнопка сейчас нажата (для чтения/записи)</td></tr>
+        </table>
+        <div class="note">Если нескольким TSpeedButton дать одинаковый GroupIndex &gt; 0 — они работают как радиокнопки: нажатие одной отпускает остальные.</div>
+<pre><span class="cm">{ Сделать кнопку недоступной и невидимой из кода }</span>
+BitBtn1.Visible := <span class="kw">true</span>;
+BitBtn1.Enabled := <span class="kw">true</span>;
+
+<span class="cm">{ Проверить состояние SpeedButton }</span>
+<span class="kw">if</span> SpeedButton1.Down <span class="kw">then</span>
+    WriteLn(<span class="str">'кнопка нажата'</span>);</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="trpo">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
+    <span class="section-title">Ввод текста: TEdit и TLabeledEdit</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое TEdit — однострочный редактор?</div>
+      <div class="answer">Поле ввода одной строки текста. Страница <b>Standard</b>.
+        <table>
+          <tr><th>Свойство</th><th>Что делает</th></tr>
+          <tr><td>Text</td><td>Текущий текст в поле (строка)</td></tr>
+          <tr><td>AutoSelect</td><td>True = текст выделяется при получении фокуса</td></tr>
+          <tr><td>ReadOnly</td><td>True = только чтение (копировать можно, редактировать нельзя)</td></tr>
+        </table>
+<pre><span class="cm">{ Прочитать текст из поля }</span>
+s := Edit1.Text;
+
+<span class="cm">{ Установить текст в поле }</span>
+Edit1.Text := <span class="str">'Привет'</span>;
+
+<span class="cm">{ Передать фокус на поле }</span>
+Edit1.SetFocus;
+
+<span class="cm">{ Выделить весь текст }</span>
+Edit1.SelectAll;</pre>
+      </div>
+
+      <div class="question">Что такое TLabeledEdit?</div>
+      <div class="answer">Страница <b>Additional</b>. Тот же TEdit, но с встроенной подписью. Удобно когда над каждым полем нужен поясняющий текст.
+<pre><span class="cm">{ Установить подпись через свойство EditLabel }</span>
+LabeledEdit1.EditLabel.Caption := <span class="str">'Первое число'</span>;
+<span class="cm">{ или через Инспектор: раскрыть EditLabel → Caption }</span></pre>
+      </div>
+
+      <div class="question">Как обрабатывать нажатие Enter в поле ввода?</div>
+      <div class="answer">Событие <b>OnKeyPress</b>. Параметр <code>Key</code> содержит код нажатой клавиши. Enter = <code>#13</code>.
+<pre><span class="kw">procedure</span> TForm1.Edit1KeyPress(Sender: TObject; <span class="kw">var</span> Key: <span class="tp">char</span>);
+<span class="kw">begin</span>
+    <span class="kw">if</span> Key &lt;&gt; <span class="num">#13</span> <span class="kw">then</span> exit;  <span class="cm">{ если не Enter — выходим }</span>
+    <span class="cm">{ сюда попадаем только при нажатии Enter }</span>
+    MyProcedure;
+<span class="kw">end</span>;</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="trpo">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
+    <span class="section-title">Преобразование типов: строка ↔ число</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Почему нужно преобразовывать типы?</div>
+      <div class="answer">TEdit.Text — всегда <b>строка</b>. Чтобы делать математику — нужно преобразовать в число. Чтобы показать результат — число назад в строку.</div>
+
+      <div class="question">Функции преобразования</div>
+      <div class="answer">
+        <table>
+          <tr><th>Функция</th><th>Что делает</th><th>Пример</th></tr>
+          <tr><td>StrToInt(s)</td><td>Строка → целое Integer</td><td>StrToInt('42') = 42</td></tr>
+          <tr><td>StrToFloat(s)</td><td>Строка → вещественное Double</td><td>StrToFloat('3.14') = 3.14</td></tr>
+          <tr><td>IntToStr(n)</td><td>Целое → строка</td><td>IntToStr(42) = '42'</td></tr>
+          <tr><td>FloatToStr(x)</td><td>Вещественное → строка</td><td>FloatToStr(3.14) = '3.14'</td></tr>
+        </table>
+        <div class="warn">Если ввести буквы вместо числа — StrToInt/StrToFloat выбросят исключение. Всегда оборачивай в try..except!</div>
+<pre><span class="kw">var</span> a, b, res: <span class="tp">Integer</span>;
+<span class="kw">begin</span>
+  <span class="kw">try</span>
+    a := <span class="fn">StrToInt</span>(LabeledEdit1.Text);
+    b := <span class="fn">StrToInt</span>(LabeledEdit2.Text);
+    res := a + b;
+    LabeledEdit3.Text := <span class="fn">IntToStr</span>(res);
+  <span class="kw">except</span>
+    <span class="fn">ShowMessage</span>(<span class="str">'Введите корректное число!'</span>);
+  <span class="kw">end</span>;
+<span class="kw">end</span>;</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="trpo">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
+    <span class="section-title">TStatusBar — строка состояния</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое TStatusBar?</div>
+      <div class="answer">Компонент на странице <b>Common Controls</b>. Полоса внизу окна — обычно выводит вспомогательную информацию о последнем действии.</div>
+
+      <div class="question">Как вывести текст в строку состояния?</div>
+      <div class="answer">
+        <table>
+          <tr><th>Режим</th><th>Свойство</th><th>Код</th></tr>
+          <tr><td>Одна панель</td><td>SimplePanel = true</td><td>StatusBar1.SimpleText := 'Сложение';</td></tr>
+          <tr><td>Несколько панелей</td><td>SimplePanel = false</td><td>StatusBar1.Panels[0].Text := 'Текст';</td></tr>
+        </table>
+<pre><span class="cm">{ Один раздел }</span>
+StatusBar1.SimplePanel := <span class="kw">true</span>;
+StatusBar1.SimpleText := <span class="str">'Последняя операция: Умножение'</span>;
+
+<span class="cm">{ Несколько разделов }</span>
+StatusBar1.Panels[<span class="num">0</span>].Text := <span class="str">'Раздел 1'</span>;
+StatusBar1.Panels.Items[<span class="num">1</span>].Text := <span class="str">'Раздел 2'</span>;</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="trpo">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
+    <span class="section-title">Обработка исключений: try..except</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое исключение?</div>
+      <div class="answer">Ошибка во время выполнения программы. Возникает при: неверном вводе пользователя, делении на ноль, обращении к несуществующему файлу, выходу за границы массива и т.д. Без обработки — программа аварийно завершается.</div>
+
+      <div class="question">Синтаксис try..except</div>
+      <div class="answer">
+<pre><span class="kw">try</span>
+    <span class="cm">{ код который может вызвать ошибку }</span>
+    a := <span class="fn">StrToInt</span>(Edit1.Text);
+    b := a <span class="kw">div</span> <span class="fn">StrToInt</span>(Edit2.Text);
+<span class="kw">except</span>
+    <span class="cm">{ сюда попадаем при любой ошибке в блоке try }</span>
+    <span class="fn">ShowMessage</span>(<span class="str">'Ошибка! Проверьте введённые данные.'</span>);
+<span class="kw">end</span>;</pre>
+        <div class="tip">Если в блоке <b>try</b> возникает ошибка — выполнение немедленно переходит в <b>except</b>. Остаток кода в try не выполняется.</div>
+      </div>
+
+      <div class="question">Что вызывает исключения?</div>
+      <div class="answer">Ввод букв вместо числа (StrToInt), деление на ноль, обращение к несуществующему файлу, выход за пределы памяти, переполнение разрядной сетки.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="trpo">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
+    <span class="section-title">Пример 1: управление видимостью кнопок</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Задача: два TButton управляют TBitBtn (Kind=bkClose)</div>
+      <div class="answer">Button1 «Показать кнопку» → делает BitBtn1 видимой. Button2 «Сделать доступной» → делает BitBtn1 активной. Изначально BitBtn1: Enabled=False, Visible=False.
+<pre><span class="cm">{ Button1.OnClick }</span>
+<span class="kw">procedure</span> TForm1.Button1Click(Sender: TObject);
+<span class="kw">begin</span>
+    BitBtn1.Visible := <span class="kw">true</span>;
+<span class="kw">end</span>;
+
+<span class="cm">{ Button2.OnClick }</span>
+<span class="kw">procedure</span> TForm1.Button2Click(Sender: TObject);
+<span class="kw">begin</span>
+    BitBtn1.Enabled := <span class="kw">true</span>;
+<span class="kw">end</span>;</pre>
+        <div class="note">Порядок: сначала видимость, затем доступность. Иначе пользователь увидит активную, но невидимую кнопку.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="trpo">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
+    <span class="section-title">Пример 2: авторизация с проверкой пароля</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Как работает программа авторизации?</div>
+      <div class="answer">Глобальные переменные объявляются в <b>interface</b> (чтобы были доступны во всех обработчиках). Пароль задаётся в <b>FormCreate</b>. Попытка 1 — «Неправильный пароль», попытки 2-3 — предупреждение с счётчиком, попытка 3 — отказ и закрытие.
+<pre><span class="kw">var</span>
+    Form1: TForm1;
+    passw: <span class="tp">string</span>[<span class="num">4</span>];  <span class="cm">{ пароль }</span>
+    Stroka: <span class="tp">string</span>;    <span class="cm">{ для сообщения }</span>
+    n: <span class="tp">integer</span>;        <span class="cm">{ счётчик попыток }</span>
+
+<span class="cm">{ FormCreate — инициализация }</span>
+<span class="kw">procedure</span> TForm1.FormCreate(Sender: TObject);
+<span class="kw">begin</span>
+    passw := <span class="str">'1234'</span>;
+    n := <span class="num">1</span>;
+<span class="kw">end</span>;
+
+<span class="cm">{ Общая процедура проверки }</span>
+<span class="kw">procedure</span> TForm1.avtorization;
+<span class="kw">begin</span>
+    <span class="kw">if</span> passw &lt;&gt; Edit1.Text <span class="kw">then</span>
+    <span class="kw">begin</span>
+        Edit1.SetFocus;
+        <span class="kw">if</span> n = <span class="num">1</span> <span class="kw">then</span> <span class="kw">begin</span>
+            <span class="fn">ShowMessage</span>(<span class="str">'Неправильный пароль!'</span>); inc(n);
+        <span class="kw">end</span> <span class="kw">else if</span> n = <span class="num">3</span> <span class="kw">then</span> <span class="kw">begin</span>
+            <span class="fn">ShowMessage</span>(<span class="str">'Вам отказано в доступе'</span>); Close();
+        <span class="kw">end</span> <span class="kw">else</span> <span class="kw">begin</span>
+            Stroka := <span class="str">'Вы '</span> + <span class="fn">IntToStr</span>(n) + <span class="str">' раза ввели неправильный пароль'</span>;
+            <span class="fn">ShowMessage</span>(Stroka); inc(n);
+        <span class="kw">end</span>;
+    <span class="kw">end</span> <span class="kw">else</span> <span class="kw">begin</span>
+        <span class="fn">ShowMessage</span>(<span class="str">'Вы успешно авторизовались!'</span>); Close();
+    <span class="kw">end</span>;
+<span class="kw">end</span>;
+
+<span class="cm">{ Кнопка и Enter вызывают одну процедуру }</span>
+<span class="kw">procedure</span> TForm1.Button1Click(Sender: TObject);
+<span class="kw">begin</span>  avtorization;  <span class="kw">end</span>;
+
+<span class="kw">procedure</span> TForm1.Edit1KeyPress(Sender: TObject; <span class="kw">var</span> Key: <span class="tp">char</span>);
+<span class="kw">begin</span>
+    <span class="kw">if</span> Key &lt;&gt; <span class="num">#13</span> <span class="kw">then</span> exit;
+    avtorization;
+<span class="kw">end</span>;</pre>
+        <div class="tip">Вынос логики в отдельную процедуру <code>avtorization</code> устраняет дублирование кода между кнопкой и обработчиком Enter.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="trpo">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
+    <span class="section-title">Пример 3: калькулятор с TSpeedButton и TStatusBar</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Компоненты формы</div>
+      <div class="answer">3× TLabeledEdit (A, B, Результат), 4× TSpeedButton (+, −, ×, ÷), 1× TBitBtn (закрыть), 1× TStatusBar. Для SpeedButton: GroupIndex=1, AllowAllUp=true.</div>
+
+      <div class="question">Код обработчиков кнопок операций</div>
+      <div class="answer">
+<pre><span class="cm">{ SpeedButton1 «+» }</span>
+LabeledEdit3.Text := <span class="fn">IntToStr</span>(
+    <span class="fn">StrToInt</span>(LabeledEdit1.Text) + <span class="fn">StrToInt</span>(LabeledEdit2.Text));
+StatusBar1.SimpleText := <span class="str">'Сложение'</span>;
+LabeledEdit1.SetFocus;
+LabeledEdit1.SelectAll;
+
+<span class="cm">{ SpeedButton2 «−» }</span>
+LabeledEdit3.Text := <span class="fn">IntToStr</span>(
+    <span class="fn">StrToInt</span>(LabeledEdit1.Text) - <span class="fn">StrToInt</span>(LabeledEdit2.Text));
+StatusBar1.SimpleText := <span class="str">'Вычитание'</span>;
+
+<span class="cm">{ SpeedButton3 «×» }</span>
+LabeledEdit3.Text := <span class="fn">IntToStr</span>(
+    <span class="fn">StrToInt</span>(LabeledEdit1.Text) * <span class="fn">StrToInt</span>(LabeledEdit2.Text));
+StatusBar1.SimpleText := <span class="str">'Умножение'</span>;
+
+<span class="cm">{ SpeedButton4 «÷» — целочисленное деление! }</span>
+LabeledEdit3.Text := <span class="fn">IntToStr</span>(
+    <span class="fn">StrToInt</span>(LabeledEdit1.Text) <span class="kw">div</span> <span class="fn">StrToInt</span>(LabeledEdit2.Text));
+StatusBar1.SimpleText := <span class="str">'Деление нацело'</span>;</pre>
+        <div class="warn">Используется <code>div</code> — целочисленное деление. 7 div 2 = 3. Для вещественного — используй <code>/</code> и <code>StrToFloat</code>.</div>
+      </div>
+
+      <div class="question">Как переходить между полями по Enter?</div>
+      <div class="answer">Событие <b>OnKeyPress</b> на LabeledEdit1. При нажатии #13 — переводим фокус и сбрасываем состояние SpeedButton:
+<pre><span class="kw">if</span> Key = <span class="num">#13</span> <span class="kw">then</span> <span class="kw">begin</span>
+    LabeledEdit2.SetFocus;
+    SpeedButton1.Down := <span class="kw">false</span>;
+    SpeedButton2.Down := <span class="kw">false</span>;
+    SpeedButton3.Down := <span class="kw">false</span>;
+    SpeedButton4.Down := <span class="kw">false</span>;
+    exit;
+<span class="kw">end</span>;</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="trpo">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
+    <span class="section-title">ООП в Lazarus: TSquare и TCube (код из ЛР)</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Структура класса TSquare</div>
+      <div class="answer">
+        <table>
+          <tr><th>Элемент</th><th>Что делает</th></tr>
+          <tr><td>FSide: Double</td><td>Приватное поле — длина стороны</td></tr>
+          <tr><td>Create(ASide)</td><td>Конструктор — сохраняет сторону</td></tr>
+          <tr><td>Perimeter: Double</td><td>4 * FSide</td></tr>
+          <tr><td>Area: Double <b>virtual</b></td><td>FSide * FSide (переопределяется)</td></tr>
+          <tr><td>Diagonal: Double</td><td>FSide * Sqrt(2)</td></tr>
+          <tr><td>PrintInfo(Memo) <b>virtual</b></td><td>Выводит данные в TMemo</td></tr>
+        </table>
+      </div>
+
+      <div class="question">TCube наследует TSquare и что переопределяет?</div>
+      <div class="answer">
+<pre><span class="cm">{ Площадь поверхности = 6 граней }</span>
+<span class="kw">function</span> TCube.Area: <span class="tp">Double</span>; <span class="kw">override</span>;
+<span class="kw">begin</span>
+    Result := <span class="num">6</span> * <span class="kw">inherited</span> Area;  <span class="cm">{ 6 * a² }</span>
+<span class="kw">end</span>;
+
+<span class="cm">{ Объём = a³ }</span>
+<span class="kw">function</span> TCube.Volume: <span class="tp">Double</span>;
+<span class="kw">begin</span>
+    Result := Power(<span class="kw">inherited</span> Perimeter / <span class="num">4</span>, <span class="num">3</span>);
+    <span class="cm">{ Perimeter/4 возвращает сторону a, затем a³ }</span>
+<span class="kw">end</span>;</pre>
+        <div class="tip"><b>inherited</b> — вызов метода родительского класса. FSide в TCube недоступен (он private в TSquare), поэтому сторона получается через Perimeter/4.</div>
+      </div>
+
+      <div class="question">Ключевые концепции ООП в этом коде</div>
+      <div class="answer">
+        <table>
+          <tr><th>Концепция</th><th>Как используется</th></tr>
+          <tr><td>Наследование</td><td>TCube = class(TSquare) — автоматически получает поля и методы</td></tr>
+          <tr><td>Полиморфизм</td><td>virtual/override — Area и PrintInfo работают по-разному для квадрата и куба</td></tr>
+          <tr><td>Инкапсуляция</td><td>FSide в private — снаружи не видно, доступ только через методы</td></tr>
+          <tr><td>inherited</td><td>Вызов метода родителя из наследника</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="trpo">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
+    <span class="section-title">Шпаргалка: часто используемые методы и события</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Методы управления компонентами</div>
+      <div class="answer">
+        <table>
+          <tr><th>Метод / Свойство</th><th>Что делает</th></tr>
+          <tr><td>Component.SetFocus</td><td>Передать фокус ввода на компонент</td></tr>
+          <tr><td>Edit.SelectAll</td><td>Выделить весь текст в поле</td></tr>
+          <tr><td>Form.Close</td><td>Закрыть форму/приложение</td></tr>
+          <tr><td>ShowMessage('текст')</td><td>Диалог с текстом и кнопкой ОК</td></tr>
+          <tr><td>inc(n)</td><td>Увеличить целое n на 1 (n := n + 1)</td></tr>
+          <tr><td>Memo.Lines.Add('текст')</td><td>Добавить строку в TMemo</td></tr>
+          <tr><td>Memo.Lines.Clear</td><td>Очистить TMemo</td></tr>
+        </table>
+      </div>
+
+      <div class="question">Ключевые события</div>
+      <div class="answer">
+        <table>
+          <tr><th>Событие</th><th>Когда срабатывает</th></tr>
+          <tr><td>OnClick</td><td>Клик мышью по компоненту</td></tr>
+          <tr><td>OnCreate</td><td>При создании формы (до показа)</td></tr>
+          <tr><td>OnShow</td><td>При показе формы пользователю</td></tr>
+          <tr><td>OnKeyPress</td><td>При нажатии любой клавиши в компоненте</td></tr>
+          <tr><td>OnChange</td><td>При изменении текста в Edit</td></tr>
+        </table>
+      </div>
+
+      <div class="question">Быстрая памятка — что где находится</div>
+      <div class="answer">
+        <table>
+          <tr><th>Компонент</th><th>Страница палитры</th></tr>
+          <tr><td>TLabel, TButton, TEdit, TMemo</td><td>Standard</td></tr>
+          <tr><td>TBitBtn, TSpeedButton, TLabeledEdit</td><td>Additional</td></tr>
+          <tr><td>TStatusBar</td><td>Common Controls</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 // Загружаем вопросы из questions.html и вставляем в нужные места
