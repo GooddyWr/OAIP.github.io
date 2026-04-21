@@ -1,471 +1,342 @@
-<!-- ЛР7-8 ТРПО — Основы разработки графических приложений -->
+<!-- ═══════════════════════════════════════════════════
+     ЛР 9 — ВОПРОСЫ ПО КОДУ (из лабораторной работы)
+════════════════════════════════════════════════════ -->
 
-<div class="section" data-lr="trpo">
+<div class="section" data-lr="9">
   <div class="section-header" onclick="toggle(this)">
-    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
-    <span class="section-title">Визуальное программирование в Lazarus — основы</span>
+    <span class="lr-badge lr-9">ЛР 9</span>
+    <span class="section-title">Рисование рамки — разбор кода по шагам</span>
     <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
   </div>
   <div class="section-body">
     <div class="qa">
-      <div class="question">Что такое визуальное программирование?</div>
-      <div class="answer">Берёшь готовые компоненты из библиотеки <b>LCL</b>, перетаскиваешь на форму, настраиваешь свойства и пишешь обработчики событий. Каждый компонент — это класс: <code>TLabel</code>, <code>TButton</code>, <code>TEdit</code> и т.д.</div>
+      <div class="question">Зачем выносить рисование рамки в процедуру DrawFrame?</div>
+      <div class="answer">Для читаемости и переиспользования — можно вызвать несколько раз не копируя код. Процедура без параметров выполняет фиксированное действие.</div>
 
-      <div class="question">Как создать новый проект в Lazarus?</div>
-      <div class="answer">
-        <div class="tip">Меню → <b>Проект → Создать проект → Приложение</b>. Каждый пример — отдельный проект в отдельной папке!</div>
-      </div>
+      <div class="question">Почему первый цикл рисует строку от 1 до 60, а средний цикл идёт от 2 до 19?</div>
+      <div class="answer">Первая строка (верхняя граница) уже нарисована первым циклом. Цикл средних строк начинается со второй строки. Заканчивается на 19 — последняя строка (нижняя граница) рисуется отдельным циклом.</div>
 
-      <div class="question">Что такое Инспектор объектов?</div>
-      <div class="answer">Панель в Lazarus. Две вкладки: <b>Properties</b> (свойства) и <b>Events</b> (события). Двойной клик по событию — Lazarus автоматически создаёт пустой обработчик.</div>
+      <div class="question">Зачем внутри среднего цикла вложенный цикл for j := 2 to 59?</div>
+      <div class="answer">Позиция 1 занята левым краем (<code>*</code>), позиция 60 — правым. Между ними (2–59) выводятся 58 пробелов — внутреннее пространство рамки.</div>
 
-      <div class="question">Чем свойства отличаются от событий?</div>
-      <div class="answer"><b>Свойства</b> — внешний вид и состояние: размер, цвет, текст, доступность. <b>События</b> — поведение: что происходит при клике, вводе, открытии формы. Обработчик события — процедура, которую пишет программист.</div>
+      <div class="question">Почему здесь write, а не writeln при выводе внутреннего пространства?</div>
+      <div class="answer">Строка ещё не закончена — после пробелов нужно вывести правый край <code>*</code>. <code>writeln</code> преждевременно перешёл бы на новую строку.</div>
 
-      <div class="question">Компоненты бывают видимыми и невидимыми?</div>
-      <div class="answer">Да. Форма при проектировании — контейнер для компонентов. На неё можно поместить и невидимые компоненты (например, таймеры, диалоги).</div>
+      <div class="question">Чем процедура DrawRect(width, height) лучше DrawFrame?</div>
+      <div class="answer">DrawRect принимает параметры — размер рамки задаётся при вызове. DrawFrame рисует рамку фиксированного размера 60×20. DrawRect универсальнее.</div>
+
+      <div class="question">Что такое локальные переменные i, j внутри процедуры?</div>
+      <div class="answer">Локальные переменные существуют только во время работы процедуры и недоступны за её пределами. Глобальные переменные (например, w, h) существуют на протяжении всей программы.</div>
+
+      <div class="question">Что такое фактические параметры в вызове DrawRect(w, h)?</div>
+      <div class="answer">Фактические параметры — реальные значения, передаваемые при вызове (здесь w и h). Формальные параметры (width, height) — имена в объявлении процедуры. w передаётся в width, h — в height.</div>
     </div>
   </div>
 </div>
 
-<div class="section" data-lr="trpo">
+<div class="section" data-lr="9">
   <div class="section-header" onclick="toggle(this)">
-    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
-    <span class="section-title">TButton и TBitBtn — кнопки</span>
+    <span class="lr-badge lr-9">ЛР 9</span>
+    <span class="section-title">Функции для треугольника и трапеции</span>
     <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
   </div>
   <div class="section-body">
     <div class="qa">
-      <div class="question">Свойства TButton (страница Standard)</div>
-      <div class="answer">
-        <table>
-          <tr><th>Свойство</th><th>Что делает</th></tr>
-          <tr><td>Caption</td><td>Текст на кнопке</td></tr>
-          <tr><td>Enabled</td><td>True = доступна, False = серая/заблокирована</td></tr>
-          <tr><td>Visible</td><td>True = видна, False = скрыта</td></tr>
-          <tr><td>Default</td><td>True = Enter работает как клик по этой кнопке</td></tr>
-          <tr><td>Cancel</td><td>True = Escape работает как клик по этой кнопке</td></tr>
-        </table>
-      </div>
+      <div class="question">Что такое тип возвращаемого значения и как он указывается?</div>
+      <div class="answer">После двоеточия в заголовке функции: <code>function TriPerimeter(a, b, c: real): real;</code> — функция возвращает тип <code>real</code>. Значение возвращается присваиванием имени функции: <code>TriPerimeter := a + b + c;</code></div>
 
-      <div class="question">Что такое TBitBtn — чем отличается от TButton?</div>
-      <div class="answer">Страница <b>Additional</b>. Отличие — можно отображать иконку. Все свойства TButton плюс:
-        <table>
-          <tr><th>Свойство</th><th>Что делает</th></tr>
-          <tr><td>Kind</td><td>Готовый тип с иконкой и текстом (bkOK, bkClose, bkYes…)</td></tr>
-          <tr><td>Glyph</td><td>Своя иконка — путь к файлу рисунка</td></tr>
-          <tr><td>Layout</td><td>Положение иконки: blGlyphLeft / Right / Top / Bottom</td></tr>
-          <tr><td>Margin</td><td>Отступ от края кнопки до иконки (пиксели, по умолч. 1)</td></tr>
-          <tr><td>Spacing</td><td>Расстояние между иконкой и текстом (пиксели)</td></tr>
-        </table>
-      </div>
+      <div class="question">Почему нельзя использовать ^ для возведения в степень в Pascal?</div>
+      <div class="answer">В Pascal оператор <code>^</code> используется для работы с указателями. Для квадрата используется умножение (<code>h*h</code>) или функция <code>Sqr(h)</code>.</div>
 
-      <div class="question">Какие есть типы Kind у TBitBtn?</div>
-      <div class="answer">
-        <table>
-          <tr><th>Значение</th><th>Текст на кнопке</th></tr>
-          <tr><td>bkAbort</td><td>Прервать</td></tr>
-          <tr><td>bkAll</td><td>Все</td></tr>
-          <tr><td>bkCancel</td><td>Отмена</td></tr>
-          <tr><td>bkClose</td><td>Закрыть</td></tr>
-          <tr><td>bkCustom</td><td>Произвольный (задаёт программист)</td></tr>
-          <tr><td>bkHelp</td><td>Справка</td></tr>
-          <tr><td>bkIgnore</td><td>Пропуск</td></tr>
-          <tr><td>bkNo / bkYes</td><td>Нет / Да</td></tr>
-          <tr><td>bkNoToAll / bkYesToAll</td><td>Нет для всех / Да для всех</td></tr>
-          <tr><td>bkOK</td><td>ОК</td></tr>
-          <tr><td>bkRetry</td><td>Повтор</td></tr>
-        </table>
-      </div>
+      <div class="question">Что такое формула Герона и как она используется в TriArea?</div>
+      <div class="answer">Формула для площади треугольника по трём сторонам: сначала вычисляется полупериметр <code>s = (a+b+c)/2</code>, затем площадь <code>Sqrt(s*(s-a)*(s-b)*(s-c))</code>. Переменная <code>s</code> — локальная внутри функции.</div>
 
-      <div class="question">Пример: управление видимостью и доступностью BitBtn</div>
-      <div class="answer">Форма: Button1 «Показать кнопку», Button2 «Сделать доступной», BitBtn1 (Kind=bkClose, Enabled=False, Visible=False).
-<pre><span class="cm">{ Button1.OnClick — показать }</span>
-<span class="kw">procedure</span> TForm1.Button1Click(Sender: TObject);
-<span class="kw">begin</span>
-    BitBtn1.Visible := <span class="kw">true</span>;
-<span class="kw">end</span>;
+      <div class="question">Почему в TrapPerimeter вызывается функция TrapSide, а не считается заново?</div>
+      <div class="answer">Чтобы не дублировать код. Функция уже написана и возвращает значение, которое можно использовать в выражении: <code>TrapPerimeter := a + b + 2 * TrapSide(a, b, h);</code></div>
 
-<span class="cm">{ Button2.OnClick — разблокировать }</span>
-<span class="kw">procedure</span> TForm1.Button2Click(Sender: TObject);
-<span class="kw">begin</span>
-    BitBtn1.Enabled := <span class="kw">true</span>;
-<span class="kw">end</span>;</pre>
-        <div class="note">После запуска BitBtn1 не видна. Button1 — кнопка появляется но серая. Button2 — становится активной и закрывает приложение.</div>
-      </div>
+      <div class="question">Что такое :0:2 при выводе вещественного числа?</div>
+      <div class="answer">Форматирование вывода: <code>:0:2</code> — минимальная ширина поля 0 (минимально необходимая), 2 знака после запятой. Применяется ко всему выражению, в том числе к сумме двух вызовов функции.</div>
     </div>
   </div>
 </div>
 
-<div class="section" data-lr="trpo">
+<div class="section" data-lr="9">
   <div class="section-header" onclick="toggle(this)">
-    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
-    <span class="section-title">TSpeedButton — быстрая кнопка с фиксацией</span>
+    <span class="lr-badge lr-9">ЛР 9</span>
+    <span class="section-title">Функция HasRealRoots и проверка палиндрома</span>
     <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
   </div>
   <div class="section-body">
     <div class="qa">
-      <div class="question">Что такое TSpeedButton и чем отличается?</div>
-      <div class="answer">Страница <b>Additional</b>. Используется в панелях инструментов. Главная особенность — умеет <b>фиксироваться</b> в нажатом состоянии.
-        <table>
-          <tr><th>Свойство</th><th>Что делает</th></tr>
-          <tr><td>GroupIndex</td><td>0 = обычная кнопка; &gt;0 = фиксируется при нажатии</td></tr>
-          <tr><td>AllowAllUp</td><td>True = повторный клик отпускает кнопку</td></tr>
-          <tr><td>Down</td><td>True = кнопка сейчас в нажатом состоянии</td></tr>
-        </table>
-      </div>
+      <div class="question">Что такое дискриминант и как функция возвращает boolean?</div>
+      <div class="answer">Дискриминант: <code>b*b - 4*a*c</code>. Функция HasRealRoots присваивает результат сравнения: <code>HasRealRoots := (b*b - 4*a*c) >= 0;</code>. Если D ≥ 0 — вещественные корни есть, возвращается true.</div>
 
-      <div class="question">Как сделать группу взаимоисключающих кнопок?</div>
-      <div class="answer">Дать нескольким TSpeedButton одинаковый GroupIndex &gt; 0 и AllowAllUp = true — работают как радиокнопки: нажатие одной отпускает предыдущую.
-<pre><span class="cm">{ Проверить состояние }</span>
-<span class="kw">if</span> SpeedButton1.Down <span class="kw">then</span>
-    WriteLn(<span class="str">'SpeedButton1 нажата'</span>);
+      <div class="question">Почему if HasRealRoots(a, b, c) then, а не if HasRealRoots(a,b,c) = true then?</div>
+      <div class="answer">Функция уже возвращает boolean — сравнение с true избыточно и просто удлиняет код. <code>if HasRealRoots(...) then</code> читается напрямую как «если есть вещественные корни».</div>
 
-<span class="cm">{ Сбросить все кнопки из кода }</span>
-SpeedButton1.Down := <span class="kw">false</span>;
-SpeedButton2.Down := <span class="kw">false</span>;</pre>
-      </div>
+      <div class="question">Как работает проверка палиндрома через Str и сравнение символов?</div>
+      <div class="answer"><code>Str(n, s)</code> переводит число в строку. Затем цикл <code>for i := 1 to Length(s) div 2</code> сравнивает симметричные символы: <code>s[i]</code> и <code>s[Length(s)-i+1]</code>. Если хотя бы одна пара не совпадает — <code>isPalin := false</code>.</div>
+
+      <div class="question">Почему в функции IsPalindrome нужна промежуточная переменная isPalin?</div>
+      <div class="answer">Нельзя присваивать имени функции внутри цикла — в Pascal это может трактоваться как рекурсивный вызов. Используется отдельная переменная, которой в конце присваивается: <code>IsPalindrome := isPalin;</code></div>
+
+      <div class="question">Что такое алгоритм Евклида для нахождения НОД?</div>
+      <div class="answer">Цикл <code>while b &lt;&gt; 0 do begin a := a mod b; a := a xor b; b := a xor b; a := a xor b; end;</code>. Когда b становится 0, в a находится НОД. Три строки с xor — обмен значениями без дополнительной переменной.</div>
+
+      <div class="question">Как найти НОД трёх чисел если функция принимает только два?</div>
+      <div class="answer">Вложенный вызов: <code>GCD(GCD(a, b), c)</code> — сначала находим НОД(a,b), потом НОД результата и c. Функция принимает два параметра, поэтому нужно два вызова.</div>
     </div>
   </div>
 </div>
 
-<div class="section" data-lr="trpo">
+<!-- ═══════════════════════════════════════════════════
+     ЛР 10 — ВОПРОСЫ ПО КОДУ
+════════════════════════════════════════════════════ -->
+
+<div class="section" data-lr="10">
   <div class="section-header" onclick="toggle(this)">
-    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
-    <span class="section-title">TEdit и TLabeledEdit — поля ввода</span>
+    <span class="lr-badge lr-10">ЛР 10</span>
+    <span class="section-title">Текстовый файл — запись строк (Task1)</span>
     <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
   </div>
   <div class="section-body">
     <div class="qa">
-      <div class="question">Свойства TEdit (страница Standard)</div>
-      <div class="answer">
-        <table>
-          <tr><th>Свойство</th><th>Что делает</th></tr>
-          <tr><td>Text</td><td>Текущий текст в поле (строка). По умолчанию «Edit1»</td></tr>
-          <tr><td>AutoSelect</td><td>True = весь текст выделяется при получении фокуса</td></tr>
-          <tr><td>ReadOnly</td><td>True = только чтение (копировать можно, менять нельзя)</td></tr>
-        </table>
-<pre><span class="cm">{ Работа с TEdit из кода }</span>
-s := Edit1.Text;             <span class="cm">{ прочитать текст }</span>
-Edit1.Text := <span class="str">'Привет'</span>;      <span class="cm">{ установить текст }</span>
-Edit1.SetFocus;              <span class="cm">{ передать фокус ввода }</span>
-Edit1.SelectAll;             <span class="cm">{ выделить весь текст }</span></pre>
-      </div>
+      <div class="question">Что такое файловая переменная и чем f: text отличается от f: file of integer?</div>
+      <div class="answer">Файловая переменная — посредник между программой и файлом. <code>text</code> — текстовый файл, данные читаются/пишутся как строки (число 42 = два символа '4','2'). <code>file of integer</code> — бинарный файл, число хранится в двоичном виде.</div>
 
-      <div class="question">Что такое TLabeledEdit?</div>
-      <div class="answer">Страница <b>Additional</b>. Тот же TEdit, но со встроенной подписью — удобно когда над каждым полем нужен поясняющий текст.
-<pre><span class="cm">{ Задать подпись через Инспектор:
-  раскрыть свойство EditLabel → Caption }</span>
+      <div class="question">Почему нельзя после assign сразу писать в файл?</div>
+      <div class="answer"><code>assign</code> только связывает переменную с именем файла. Нужно ещё открыть файл через <code>rewrite</code> (для записи) или <code>reset</code> (для чтения).</div>
 
-<span class="cm">{ Или из кода: }</span>
-LabeledEdit1.EditLabel.Caption := <span class="str">'Первое число'</span>;</pre>
-      </div>
+      <div class="question">Что произойдёт если не вызвать close после записи?</div>
+      <div class="answer">Данные из буфера могут не записаться на диск. Файл останется заблокированным — другие программы не смогут его открыть.</div>
 
-      <div class="question">Как обработать нажатие Enter в поле ввода?</div>
-      <div class="answer">Событие <b>OnKeyPress</b>. Параметр <code>Key</code> — код нажатой клавиши. Код Enter = <code>#13</code>.
-<pre><span class="kw">procedure</span> TForm1.Edit1KeyPress(Sender: TObject; <span class="kw">var</span> Key: <span class="tp">char</span>);
-<span class="kw">begin</span>
-    <span class="kw">if</span> Key &lt;&gt; <span class="num">#13</span> <span class="kw">then</span> exit;  <span class="cm">{ не Enter — сразу выходим }</span>
-    <span class="cm">{ сюда попадаем только при нажатии Enter }</span>
-    MyProcedure;
-<span class="kw">end</span>;</pre>
-        <div class="tip">Проще установить у кнопки <code>Default = True</code> — тогда Enter = клик. Но при нескольких кнопках сработает та, у которой фокус. Надёжнее — OnKeyPress.</div>
-      </div>
+      <div class="question">Почему writeln(f, ...) записывает в файл, а не на экран?</div>
+      <div class="answer">Наличие файловой переменной f первым аргументом указывает куда идёт запись. Без f — вывод на экран. Аналогично для <code>read(f, ...)</code> — чтение из файла, не с клавиатуры.</div>
+
+      <div class="question">Как правильно записать несколько строк и затем прочитать их обратно?</div>
+      <div class="answer">Сначала <code>rewrite(f)</code> → запись → <code>close(f)</code>. Затем <code>reset(f)</code> → чтение → <code>close(f)</code>. Повторный <code>assign</code> перед <code>reset</code> не нужен — связь уже установлена.</div>
     </div>
   </div>
 </div>
 
-<div class="section" data-lr="trpo">
+<div class="section" data-lr="10">
   <div class="section-header" onclick="toggle(this)">
-    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
-    <span class="section-title">Преобразование типов: строка ↔ число</span>
+    <span class="lr-badge lr-10">ЛР 10</span>
+    <span class="section-title">Чтение чисел из файла — min, max, сумма (Task2)</span>
     <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
   </div>
   <div class="section-body">
     <div class="qa">
-      <div class="question">Почему нужно преобразовывать типы?</div>
-      <div class="answer"><code>Edit.Text</code> — всегда <b>строка</b>. Для математики нужно преобразовать в число. Для вывода результата — обратно в строку.</div>
+      <div class="question">Почему первое число читается до цикла отдельно?</div>
+      <div class="answer">Чтобы инициализировать minVal и maxVal реальным числом из файла. Если инициализировать нулём — результат будет неверным если все числа в файле положительные (минимум покажет 0, которого нет в файле).</div>
 
-      <div class="question">Какие функции преобразования использовать?</div>
-      <div class="answer">
-        <table>
-          <tr><th>Функция</th><th>Что делает</th><th>Пример</th></tr>
-          <tr><td>StrToInt(s)</td><td>Строка → Integer</td><td>StrToInt('42') = 42</td></tr>
-          <tr><td>StrToFloat(s)</td><td>Строка → Double</td><td>StrToFloat('3.14') = 3.14</td></tr>
-          <tr><td>IntToStr(n)</td><td>Integer → строка</td><td>IntToStr(42) = '42'</td></tr>
-          <tr><td>FloatToStr(x)</td><td>Double → строка</td><td>FloatToStr(3.14) = '3.14'</td></tr>
-        </table>
-        <div class="warn">Если пользователь введёт буквы — StrToInt/StrToFloat выбросят исключение и программа упадёт. Всегда оборачивай в <code>try..except</code>!</div>
-<pre><span class="kw">var</span> a, b: <span class="tp">Integer</span>;
-<span class="kw">begin</span>
-  <span class="kw">try</span>
-    a := <span class="fn">StrToInt</span>(LabeledEdit1.Text);
-    b := <span class="fn">StrToInt</span>(LabeledEdit2.Text);
-    LabeledEdit3.Text := <span class="fn">IntToStr</span>(a + b);
-  <span class="kw">except</span>
-    <span class="fn">ShowMessage</span>(<span class="str">'Введите корректное число!'</span>);
-  <span class="kw">end</span>;
-<span class="kw">end</span>;</pre>
-      </div>
+      <div class="question">Почему avg объявлена как real, а не integer?</div>
+      <div class="answer">При делении суммы на количество может получиться дробное число. В Pascal оператор <code>/</code> всегда возвращает вещественный результат, даже если оба операнда целые.</div>
+
+      <div class="question">Что такое :0:2 после avg при выводе?</div>
+      <div class="answer">Форматированный вывод вещественного числа: 0 — минимальная ширина, 2 — два знака после запятой. Без форматирования вещественное число выводится в научной нотации (например 1.98E+001).</div>
+
+      <div class="question">Чем read(f, num) отличается от readln(f, num) при чтении из файла?</div>
+      <div class="answer"><code>read</code> читает значение и оставляет указатель на той же строке. <code>readln</code> — читает и переходит на следующую строку. При чтении чисел из файла используется <code>read</code>.</div>
     </div>
   </div>
 </div>
 
-<div class="section" data-lr="trpo">
+<div class="section" data-lr="10">
   <div class="section-header" onclick="toggle(this)">
-    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
-    <span class="section-title">TStatusBar — строка состояния</span>
+    <span class="lr-badge lr-10">ЛР 10</span>
+    <span class="section-title">Типизированный файл и навигация — Seek, FileSize (Task4)</span>
     <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
   </div>
   <div class="section-body">
     <div class="qa">
-      <div class="question">Что такое TStatusBar и где находится?</div>
-      <div class="answer">Страница <b>Common Controls</b>. Полоса внизу окна — выводит вспомогательную информацию (последнее действие, режим, подсказки).</div>
+      <div class="question">Как добавить число в конец типизированного файла не используя append?</div>
+      <div class="answer"><code>append</code> работает только для текстовых файлов. Для типизированных: открыть через <code>reset(f)</code>, затем <code>Seek(f, FileSize(f))</code> — перемещает указатель за последний элемент, затем <code>write(f, num)</code>.</div>
 
-      <div class="question">Как вывести текст в строку состояния?</div>
-      <div class="answer">
-        <table>
-          <tr><th>Режим</th><th>Настройка</th><th>Код вывода</th></tr>
-          <tr><td>Одна панель</td><td>SimplePanel = true</td><td>StatusBar1.SimpleText := 'Текст';</td></tr>
-          <tr><td>Несколько панелей</td><td>SimplePanel = false</td><td>StatusBar1.Panels[0].Text := 'Текст';</td></tr>
-        </table>
-<pre><span class="cm">{ Один раздел — самое частое применение }</span>
-StatusBar1.SimplePanel := <span class="kw">true</span>;
-StatusBar1.SimpleText := <span class="str">'Последняя операция: Умножение'</span>;
+      <div class="question">Что делает Randomize и что будет если его не вызвать?</div>
+      <div class="answer"><code>Randomize</code> инициализирует генератор случайных чисел на основе текущего времени. Без него каждый запуск программы будет давать одинаковую последовательность чисел.</div>
 
-<span class="cm">{ Несколько разделов }</span>
-StatusBar1.Panels[<span class="num">0</span>].Text := <span class="str">'Панель 1'</span>;
-StatusBar1.Panels.Items[<span class="num">1</span>].Text := <span class="str">'Панель 2'</span>;</pre>
-      </div>
+      <div class="question">Что вернёт Random(200) - 100?</div>
+      <div class="answer"><code>Random(200)</code> возвращает число от 0 до 199. После вычитания 100 диапазон становится от -100 до 99 — числа могут быть отрицательными. 200 в результат НЕ включается.</div>
+
+      <div class="question">Зачем в функции FindNumber возвращается -1 если число не найдено?</div>
+      <div class="answer">-1 — сигнальное значение, которое не может быть реальным индексом (нумерация начинается с 0). При проверке результата: <code>if foundPos >= 0 then</code> — проверяем >= 0, потому что нулевой индекс тоже валиден.</div>
+
+      <div class="question">Чем вызов функции отличается от вызова процедуры?</div>
+      <div class="answer">Функция возвращает значение — вызов стоит в правой части присваивания: <code>foundPos := FindNumber(filename, searchNum)</code>. Процедура вызывается как команда: <code>CreateFile(filename, n)</code>.</div>
+
+      <div class="question">Почему pos mod 10 = 0 даёт перенос строки каждые 10 чисел?</div>
+      <div class="answer"><code>mod</code> возвращает остаток от деления. Когда pos кратно 10 (10, 20, 30...) — остаток равен 0 и вызывается <code>writeln</code>. Числа выводятся по 10 в строке для читаемости.</div>
     </div>
   </div>
 </div>
 
-<div class="section" data-lr="trpo">
+<!-- ═══════════════════════════════════════════════════
+     ЛР 11 — ВОПРОСЫ ПО КОДУ
+════════════════════════════════════════════════════ -->
+
+<div class="section" data-lr="11">
   <div class="section-header" onclick="toggle(this)">
-    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
-    <span class="section-title">Обработка исключений: try..except</span>
+    <span class="lr-badge lr-11">ЛР 11</span>
+    <span class="section-title">Связный список — добавление и обход (HomeLibrary)</span>
     <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
   </div>
   <div class="section-body">
     <div class="qa">
-      <div class="question">Что такое исключение?</div>
-      <div class="answer">Ошибка во время выполнения программы. Без обработки — программа аварийно завершается. Причины: неверный ввод пользователя, деление на ноль, несуществующий файл, переполнение, выход за пределы массива.</div>
+      <div class="question">Почему PBook объявляется до TBook, хотя ссылается на него?</div>
+      <div class="answer">В Pascal в блоке <code>type</code> разрешено опережающее объявление — можно написать указатель на тип, который будет описан ниже в том же блоке. Это единственный случай, где порядок объявления не важен.</div>
 
-      <div class="question">Синтаксис try..except</div>
-      <div class="answer">
-<pre><span class="kw">try</span>
-    <span class="cm">{ код, который может вызвать ошибку }</span>
-    a := <span class="fn">StrToInt</span>(Edit1.Text);
-    b := a <span class="kw">div</span> <span class="fn">StrToInt</span>(Edit2.Text);  <span class="cm">{ деление на ноль? }</span>
-<span class="kw">except</span>
-    <span class="cm">{ сюда попадаем при любой ошибке в try }</span>
-    <span class="fn">ShowMessage</span>(<span class="str">'Ошибка! Проверьте введённые данные.'</span>);
-<span class="kw">end</span>;</pre>
-        <div class="tip">Если в <b>try</b> возникает ошибка — выполнение немедленно прыгает в <b>except</b>. Остаток кода в try не выполняется.</div>
-      </div>
+      <div class="question">Зачем в записи TBook есть поле next: PBook?</div>
+      <div class="answer">Это указатель на следующую книгу в списке — именно это поле делает структуру связным списком. У последней книги <code>next = nil</code> — признак конца списка.</div>
+
+      <div class="question">Почему head в процедуре AddBook передаётся через var?</div>
+      <div class="answer">Если список пуст — head нужно изменить (присвоить адрес первой книги). Без <code>var</code> изменения не передались бы обратно — head снаружи остался бы nil.</div>
+
+      <div class="question">Чем current := head и current^.next := newBook решают разные ситуации?</div>
+      <div class="answer"><code>head := newBook</code> — список был пуст, первая книга становится головой. <code>current^.next := newBook</code> — список не пуст, находим последний элемент и прикрепляем новый в конец.</div>
+
+      <div class="question">Почему цикл while current^.next &lt;&gt; nil проверяет next, а не current?</div>
+      <div class="answer">Нужно остановиться на последнем элементе (у которого next = nil), чтобы прикрепить к нему новую книгу. Проверка <code>current &lt;&gt; nil</code> вышла бы за последний элемент.</div>
+
+      <div class="question">Почему libHead инициализируется nil в начале программы?</div>
+      <div class="answer">Без этого в libHead будет мусорный адрес. Проверка <code>if head = nil</code> покажет что список не пуст, хотя он пуст — поведение непредсказуемо.</div>
     </div>
   </div>
 </div>
 
-<div class="section" data-lr="trpo">
+<div class="section" data-lr="11">
   <div class="section-header" onclick="toggle(this)">
-    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
-    <span class="section-title">Пример: авторизация с 3 попытками</span>
+    <span class="lr-badge lr-11">ЛР 11</span>
+    <span class="section-title">Удаление из списка — Dispose, prev (HomeLibraryWithDelete)</span>
     <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
   </div>
   <div class="section-body">
     <div class="qa">
-      <div class="question">Как работает программа?</div>
-      <div class="answer">Компоненты: TEdit, TButton, TLabel. Пароль задаётся в FormCreate. 3 попытки — на 3-й отказ и закрытие. Глобальные переменные объявляются в <b>interface</b> (иначе обработчики их не увидят).
-<pre><span class="kw">var</span>
-    Form1: TForm1;
-    passw: <span class="tp">string</span>[<span class="num">4</span>];
-    Stroka: <span class="tp">string</span>;
-    n: <span class="tp">integer</span>;  <span class="cm">{ счётчик попыток }</span></pre>
-      </div>
+      <div class="question">Зачем нужна переменная prev при удалении из списка?</div>
+      <div class="answer">Связный список односторонний — нельзя пойти назад. <code>prev</code> хранит предыдущий элемент, чтобы «перешить»: <code>prev^.next := current^.next</code> — предыдущий элемент теперь указывает на следующий после удаляемого.</div>
 
-      <div class="question">Зачем выносить логику в отдельную процедуру?</div>
-      <div class="answer">Чтобы не дублировать код в обработчике кнопки и обработчике Enter. Одна процедура <code>avtorization</code> — два места её вызывают.
-<pre><span class="kw">procedure</span> TForm1.avtorization;
-<span class="kw">begin</span>
-    <span class="kw">if</span> passw &lt;&gt; Edit1.Text <span class="kw">then</span>
-    <span class="kw">begin</span>
-        Edit1.SetFocus;
-        <span class="kw">if</span> n = <span class="num">1</span> <span class="kw">then</span> <span class="kw">begin</span>
-            <span class="fn">ShowMessage</span>(<span class="str">'Неправильный пароль!'</span>); <span class="fn">inc</span>(n);
-        <span class="kw">end</span> <span class="kw">else if</span> n = <span class="num">3</span> <span class="kw">then</span> <span class="kw">begin</span>
-            <span class="fn">ShowMessage</span>(<span class="str">'Вам отказано в доступе'</span>); Close();
-        <span class="kw">end</span> <span class="kw">else</span> <span class="kw">begin</span>
-            Stroka := <span class="str">'Вы '</span> + <span class="fn">IntToStr</span>(n) + <span class="str">' раза ввели неправильный пароль'</span>;
-            Stroka := Stroka + <span class="str">' После 3-й попытки вам будет отказано в доступе'</span>;
-            <span class="fn">ShowMessage</span>(Stroka); <span class="fn">inc</span>(n);
-        <span class="kw">end</span>;
-    <span class="kw">end</span> <span class="kw">else</span> <span class="kw">begin</span>
-        <span class="fn">ShowMessage</span>(<span class="str">'Вы успешно авторизовались!'</span>); Close();
-    <span class="kw">end</span>;
-<span class="kw">end</span>;
+      <div class="question">Почему первый элемент удаляется отдельно от остальных?</div>
+      <div class="answer">При удалении первого элемента меняется сам head. У первого нет предыдущего, поэтому общий алгоритм с prev не подходит.</div>
 
-<span class="cm">{ Кнопка и Enter — оба вызывают одно и то же }</span>
-<span class="kw">procedure</span> TForm1.Button1Click(Sender: TObject);
-<span class="kw">begin</span>  avtorization;  <span class="kw">end</span>;
+      <div class="question">Зачем сохранять адрес в toDelete перед вызовом Dispose?</div>
+      <div class="answer">Сначала нужно перешить указатели, потом освободить память. Если освободить раньше — потеряем доступ к полю next удаляемого элемента. После <code>Dispose</code> нельзя обращаться к освобождённой памяти.</div>
 
-<span class="kw">procedure</span> TForm1.Edit1KeyPress(Sender: TObject; <span class="kw">var</span> Key: <span class="tp">char</span>);
-<span class="kw">begin</span>
-    <span class="kw">if</span> Key &lt;&gt; <span class="num">#13</span> <span class="kw">then</span> exit;
-    avtorization;
-<span class="kw">end</span>;</pre>
-      </div>
+      <div class="question">Что такое const перед параметром bookTitle?</div>
+      <div class="answer">Передача по ссылке без возможности изменения. Компилятор запрещает изменять параметр внутри процедуры. Для строк это выгоднее чем передача по значению — не создаётся копия.</div>
     </div>
   </div>
 </div>
 
-<div class="section" data-lr="trpo">
+<div class="section" data-lr="11">
   <div class="section-header" onclick="toggle(this)">
-    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
-    <span class="section-title">Пример: калькулятор с TSpeedButton и TStatusBar</span>
+    <span class="lr-badge lr-11">ЛР 11</span>
+    <span class="section-title">Поиск нечётного, очистка памяти — FindFirstOdd, FreeList</span>
     <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
   </div>
   <div class="section-body">
     <div class="qa">
-      <div class="question">Компоненты формы</div>
-      <div class="answer">3× TLabeledEdit (подписи: «Первое число», «Второе число», «Результат»), 4× TSpeedButton (+, −, ×, ÷), 1× TBitBtn (закрыть), 1× TStatusBar. Для всех SpeedButton: GroupIndex=1, AllowAllUp=true.</div>
+      <div class="question">Почему FindFirstOdd возвращает PNode, а не Integer?</div>
+      <div class="answer">Возвращая указатель на узел, мы даём доступ ко всему узлу. Nil как результат удобно проверять: <code>if result &lt;&gt; nil</code>. Чтобы получить значение: <code>result^.value</code>.</div>
 
-      <div class="question">Код операций (один паттерн для всех)</div>
-      <div class="answer">
-<pre><span class="cm">{ SpeedButton1 «+» }</span>
-<span class="kw">procedure</span> TForm1.SpeedButton1Click(Sender: TObject);
-<span class="kw">begin</span>
-    LabeledEdit3.Text := <span class="fn">IntToStr</span>(
-        <span class="fn">StrToInt</span>(LabeledEdit1.Text) + <span class="fn">StrToInt</span>(LabeledEdit2.Text));
-    StatusBar1.SimpleText := <span class="str">'Сложение'</span>;
-    LabeledEdit1.SetFocus;
-    LabeledEdit1.SelectAll;
-<span class="kw">end</span>;
+      <div class="question">Что делает функция Odd() в Pascal?</div>
+      <div class="answer">Встроенная функция: возвращает true если число нечётное, false если чётное. Проверяет последний бит числа. Эквивалентна <code>value mod 2 &lt;&gt; 0</code>, но короче и читабельнее.</div>
 
-<span class="cm">{ SpeedButton4 «÷» — целочисленное деление div! }</span>
-<span class="kw">procedure</span> TForm1.SpeedButton4Click(Sender: TObject);
-<span class="kw">begin</span>
-    LabeledEdit3.Text := <span class="fn">IntToStr</span>(
-        <span class="fn">StrToInt</span>(LabeledEdit1.Text) <span class="kw">div</span> <span class="fn">StrToInt</span>(LabeledEdit2.Text));
-    StatusBar1.SimpleText := <span class="str">'Деление нацело'</span>;
-    LabeledEdit1.SetFocus;
-    LabeledEdit1.SelectAll;
-<span class="kw">end</span>;</pre>
-        <div class="warn"><code>div</code> — целочисленное деление. 7 div 2 = 3. Для вещественного используй <code>/</code> и <code>StrToFloat</code>.</div>
-      </div>
+      <div class="question">Зачем Exit после FindFirstOdd := current?</div>
+      <div class="answer">Нашли первый нечётный — дальше искать не нужно. Без Exit цикл продолжит работу и перезапишет результат следующим нечётным элементом — вернёт последний, а не первый.</div>
 
-      <div class="question">Как переходить между полями по Enter?</div>
-      <div class="answer">Событие OnKeyPress на LabeledEdit1. При #13 — переводим фокус и сбрасываем SpeedButton:
-<pre><span class="kw">procedure</span> TForm1.LabeledEdit1KeyPress(Sender: TObject; <span class="kw">var</span> Key: <span class="tp">char</span>);
-<span class="kw">begin</span>
-    <span class="kw">if</span> Key = <span class="num">#13</span> <span class="kw">then</span> <span class="kw">begin</span>
-        LabeledEdit2.SetFocus;
-        SpeedButton1.Down := <span class="kw">false</span>;
-        SpeedButton2.Down := <span class="kw">false</span>;
-        SpeedButton3.Down := <span class="kw">false</span>;
-        SpeedButton4.Down := <span class="kw">false</span>;
-        exit;
-    <span class="kw">end</span>;
-<span class="kw">end</span>;</pre>
-      </div>
+      <div class="question">Почему в FreeList нельзя сначала вызвать Dispose, а потом head := head^.next?</div>
+      <div class="answer">После <code>Dispose</code> память освобождена — обращение к <code>head^.next</code> вызовет ошибку. Правильный порядок: сохранить адрес в temp → сдвинуть head → вызвать <code>Dispose(temp)</code>.</div>
+
+      <div class="question">Что такое string[100] и чем отличается от просто string?</div>
+      <div class="answer"><code>string</code> без размера — до 255 символов. <code>string[100]</code> ограничивает максимум 100 символами и занимает ровно 101 байт (100 + 1 байт для длины). Экономит память когда максимальная длина известна.</div>
     </div>
   </div>
 </div>
 
-<div class="section" data-lr="trpo">
+<!-- ═══════════════════════════════════════════════════
+     ЛР 12 — ВОПРОСЫ ПО КОДУ
+════════════════════════════════════════════════════ -->
+
+<div class="section" data-lr="12">
   <div class="section-header" onclick="toggle(this)">
-    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
-    <span class="section-title">ООП в коде: TSquare и TCube</span>
+    <span class="lr-badge lr-12">ЛР 12</span>
+    <span class="section-title">Модуль MathUtils — factorial, IsPrime, PrintNumberInfo</span>
     <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
   </div>
   <div class="section-body">
     <div class="qa">
-      <div class="question">Иерархия и методы классов</div>
-      <div class="answer">
-        <table>
-          <tr><th>Класс</th><th>Метод</th><th>Формула</th></tr>
-          <tr><td>TSquare</td><td>Perimeter</td><td>4 × a</td></tr>
-          <tr><td>TSquare</td><td>Area <mark>virtual</mark></td><td>a²</td></tr>
-          <tr><td>TSquare</td><td>Diagonal</td><td>a × √2</td></tr>
-          <tr><td>TCube</td><td>Area <mark>override</mark></td><td>6 × a²</td></tr>
-          <tr><td>TCube</td><td>Volume</td><td>a³</td></tr>
-        </table>
-      </div>
+      <div class="question">Почему в разделе interface функции без тела, а тела в implementation?</div>
+      <div class="answer">Interface — публичные объявления (заголовки). Implementation — скрытый код. Программа-пользователь видит только interface — «контракт» что есть в модуле, но не детали реализации.</div>
 
-      <div class="question">Как TCube использует inherited?</div>
-      <div class="answer"><code>FSide</code> объявлено <b>private</b> в TSquare — в TCube оно недоступно напрямую. Поэтому сторона восстанавливается через <code>inherited Perimeter / 4</code>.
-<pre><span class="cm">{ Площадь поверхности: 6 граней }</span>
-<span class="kw">function</span> TCube.Area: <span class="tp">Double</span>; <span class="kw">override</span>;
-<span class="kw">begin</span>
-    Result := <span class="num">6</span> * <span class="kw">inherited</span> Area;  <span class="cm">{ вызывает TSquare.Area = a² }</span>
-<span class="kw">end</span>;
+      <div class="question">Почему результат Factorial имеет тип int64, а не integer?</div>
+      <div class="answer">Факториал быстро растёт: 20! уже больше 2 миллиардов, что не помещается в integer. int64 вмещает числа до 9.2×10¹⁸.</div>
 
-<span class="cm">{ Объём: a³ }</span>
-<span class="kw">function</span> TCube.Volume: <span class="tp">Double</span>;
-<span class="kw">begin</span>
-    Result := Power(<span class="kw">inherited</span> Perimeter / <span class="num">4</span>, <span class="num">3</span>);
-    <span class="cm">{ Perimeter = 4a → /4 = a → a³ }</span>
-<span class="kw">end</span>;</pre>
-      </div>
+      <div class="question">Почему res := 1 перед циклом в Factorial, а цикл начинается с 2?</div>
+      <div class="answer">Факториал 0 и 1 равен 1. Если n=0 или n=1, цикл не выполнится и вернётся 1 — правильный результат. Умножение на 1 ничего не меняет, поэтому начинаем с 2 для экономии.</div>
 
-      <div class="question">Ключевые концепции ООП в этом коде</div>
-      <div class="answer">
-        <table>
-          <tr><th>Концепция</th><th>Как используется</th></tr>
-          <tr><td>Наследование</td><td><code>TCube = class(TSquare)</code> — получает все поля и методы автоматически</td></tr>
-          <tr><td>Полиморфизм</td><td><code>virtual</code> / <code>override</code> — Area и PrintInfo работают по-разному для квадрата и куба</td></tr>
-          <tr><td>Инкапсуляция</td><td><code>FSide</code> в <code>private</code> — снаружи не видно, доступ только через методы</td></tr>
-          <tr><td>inherited</td><td>Вызов метода родительского класса из наследника</td></tr>
-        </table>
-      </div>
+      <div class="question">Почему в IsPrime цикл идёт пока i * i &lt;= n, а не i &lt;= n?</div>
+      <div class="answer">Если у числа n есть делитель больше √n, то обязательно есть и делитель меньше √n. Проверять только до √n достаточно — это быстрее. Для n=100: проверяем до 10 вместо 100.</div>
+
+      <div class="question">Зачем PrintNumberInfo вызывает IsPrime и Factorial внутри себя?</div>
+      <div class="answer">Процедура использует другие функции того же модуля — они доступны без дополнительных объявлений. Это избавляет от дублирования кода.</div>
+
+      <div class="question">Зачем выносить функции в модуль, а не писать всё в program?</div>
+      <div class="answer">Модуль можно использовать в других программах без копирования кода. Это называется повторное использование кода. Также скрывает детали реализации и ускоряет компиляцию.</div>
     </div>
   </div>
 </div>
 
-<div class="section" data-lr="trpo">
+<div class="section" data-lr="12">
   <div class="section-header" onclick="toggle(this)">
-    <span class="lr-badge lr-trpo">ЛР7-8 ТРПО</span>
-    <span class="section-title">Шпаргалка: методы, события, где что в палитре</span>
+    <span class="lr-badge lr-12">ЛР 12</span>
+    <span class="section-title">Модуль StatUtils — динамический массив, Mean, Variance, StdDev</span>
     <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
   </div>
   <div class="section-body">
     <div class="qa">
-      <div class="question">Часто используемые методы</div>
-      <div class="answer">
-        <table>
-          <tr><th>Метод / Свойство</th><th>Что делает</th></tr>
-          <tr><td>Component.SetFocus</td><td>Передать фокус ввода на компонент</td></tr>
-          <tr><td>Edit.SelectAll</td><td>Выделить весь текст в поле</td></tr>
-          <tr><td>Form.Close</td><td>Закрыть форму / приложение</td></tr>
-          <tr><td>ShowMessage('...')</td><td>Диалог с текстом и кнопкой ОК</td></tr>
-          <tr><td>inc(n)</td><td>Увеличить n на 1 (= n := n + 1)</td></tr>
-          <tr><td>Memo.Lines.Add('...')</td><td>Добавить строку в TMemo</td></tr>
-          <tr><td>Memo.Lines.Clear</td><td>Очистить TMemo</td></tr>
-        </table>
-      </div>
+      <div class="question">Что такое TRealArray = array of real?</div>
+      <div class="answer">Динамический массив — его размер задаётся во время работы программы через <code>SetLength</code>, а не при объявлении. Тип объявлен в interface — программа-пользователь может объявлять переменные этого типа.</div>
 
-      <div class="question">Ключевые события</div>
-      <div class="answer">
-        <table>
-          <tr><th>Событие</th><th>Когда срабатывает</th></tr>
-          <tr><td>OnClick</td><td>Клик мышью по компоненту</td></tr>
-          <tr><td>OnCreate</td><td>При создании формы (до отображения)</td></tr>
-          <tr><td>OnShow</td><td>При показе формы пользователю</td></tr>
-          <tr><td>OnKeyPress</td><td>При нажатии любой клавиши в поле</td></tr>
-          <tr><td>OnChange</td><td>При изменении текста в Edit</td></tr>
-        </table>
-      </div>
+      <div class="question">Зачем SetLength(arr, n) и что будет без него?</div>
+      <div class="answer"><code>SetLength</code> задаёт размер динамического массива. Без него массив будет нулевой длины — запись в <code>arr[i]</code> вызовет ошибку выхода за границы.</div>
 
-      <div class="question">Где что находится в палитре компонентов</div>
-      <div class="answer">
-        <table>
-          <tr><th>Компонент</th><th>Страница палитры</th></tr>
-          <tr><td>TLabel, TButton, TEdit, TMemo</td><td>Standard</td></tr>
-          <tr><td>TBitBtn, TSpeedButton, TLabeledEdit</td><td>Additional</td></tr>
-          <tr><td>TStatusBar</td><td>Common Controls</td></tr>
-        </table>
-      </div>
+      <div class="question">Чем Length(a) отличается от High(a) для массива?</div>
+      <div class="answer"><code>Length</code> — количество элементов. <code>High</code> — последний индекс. Для массива из 5 элементов: Length=5, High=4. Динамические массивы индексируются с 0.</div>
+
+      <div class="question">Почему uses Math стоит в implementation, а не в interface?</div>
+      <div class="answer">Модуль Math используется только в реализации (для Sqrt, Sqr). Снаружи он не нужен. Это скрывает детали реализации — пользователь модуля не обязан знать что внутри используется Math.</div>
+
+      <div class="question">Почему StdDev вызывает Variance, а не считает сам?</div>
+      <div class="answer">СКО — это просто корень из дисперсии: <code>StdDev := Sqrt(Variance(a))</code>. Повторное использование уже написанной функции — не нужно дублировать формулу.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="12">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-12">ЛР 12</span>
+    <span class="section-title">Модуль StringUtils — ReverseStr, IsPalindrome, WordCount, ToAlternateCase</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Почему в ReverseStr цикл идёт downto 1, а не to?</div>
+      <div class="answer">Нужно идти с конца строки к началу. <code>downto</code> уменьшает счётчик. Строки в Pascal индексируются с 1, последний символ имеет индекс <code>Length(s)</code>.</div>
+
+      <div class="question">Зачем в IsPalindrome удаляются пробелы перед проверкой?</div>
+      <div class="answer">Чтобы «А роза упала на лапу Азора» тоже считался палиндромом — пробелы не должны мешать. Также применяется LowerCase — 'А' и 'а' считаются одинаковыми.</div>
+
+      <div class="question">Что такое переменная inWord: boolean в функции WordCount?</div>
+      <div class="answer">Флаг — отслеживает находимся ли мы внутри слова. Счётчик увеличивается только при переходе «не в слове → в слово» (первый символ слова). Это позволяет не считать одно слово несколько раз.</div>
+
+      <div class="question">Что вернёт WordCount для строки '  hello  world  '?</div>
+      <div class="answer">2 — два слова. Пробелы по краям и несколько пробелов между словами не влияют на результат, так как считается переход из «не в слове» в «в слове».</div>
+
+      <div class="question">Что делает ToAlternateCase и как определяется чётность символа?</div>
+      <div class="answer">Возвращает строку где нечётные символы (1, 3, 5...) в нижнем регистре, чётные (2, 4...) — в верхнем. Проверка чётности: <code>i mod 2 = 0</code>. Для 'Hello' вернёт 'hElLo'.</div>
+
+      <div class="question">Можно ли написать if IsPalindrome(s) = true then?</div>
+      <div class="answer">Да, но это избыточно. Функция уже возвращает boolean, который сам является условием. Короче и читабельнее просто <code>if IsPalindrome(s) then</code>.</div>
     </div>
   </div>
 </div>
