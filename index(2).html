@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Шпаргалка ЛР 4–12 | Pascal</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Unbounded:wght@400;700;900&family=Inter:wght@400;500;600&display=swap');
+
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --card: #1a1e2a;
+    --border: #252836;
+    --accent-4:  #f43f5e;
+    --accent-5:  #f97316;
+    --accent-6:  #eab308;
+    --accent-7:  #06b6d4;
+    --accent-8:  #a855f7;
+    --accent-9:  #f97316;
+    --accent-10: #06b6d4;
+    --accent-11: #a855f7;
+    --accent-12: #22c55e;
+    --text: #e8eaf0;
+    --muted: #7a7f94;
+    --code-bg: #0a0c10;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  header {
+    padding: 32px 24px 20px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(13,15,20,0.96);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+
+  .header-inner { max-width: 900px; margin: 0 auto; }
+
+  h1 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(16px, 4vw, 24px);
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  h1 span { color: var(--accent-7); }
+
+  .search-wrap { position: relative; margin-bottom: 14px; }
+  .search-wrap svg {
+    position: absolute; left: 12px; top: 50%;
+    transform: translateY(-50%); color: var(--muted); pointer-events: none;
+  }
+
+  #search {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px 10px 38px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color .2s;
+  }
+  #search:focus { border-color: var(--accent-7); }
+  #search::placeholder { color: var(--muted); }
+
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .tab {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 11px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .tab:hover { color: var(--text); border-color: #3a3f52; }
+  .tab.active { color: #000; border-color: transparent; font-weight: 600; }
+  .tab[data-lr="all"].active  { background: var(--text); }
+  .tab[data-lr="4"].active    { background: var(--accent-4); }
+  .tab[data-lr="5"].active    { background: var(--accent-5); }
+  .tab[data-lr="6"].active    { background: var(--accent-6); }
+  .tab[data-lr="7"].active    { background: var(--accent-7); }
+  .tab[data-lr="8"].active    { background: var(--accent-8); }
+  .tab[data-lr="9"].active    { background: var(--accent-9); }
+  .tab[data-lr="10"].active   { background: var(--accent-10); }
+  .tab[data-lr="11"].active   { background: var(--accent-11); }
+  .tab[data-lr="12"].active   { background: var(--accent-12); }
+
+  main { max-width: 900px; margin: 0 auto; padding: 24px 16px 60px; }
+
+  .section {
+    margin-bottom: 10px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color .2s;
+  }
+  .section.hidden { display: none; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    cursor: pointer;
+    background: var(--card);
+    user-select: none;
+    gap: 12px;
+  }
+  .section-header:hover { background: #1e2230; }
+
+  .section-title { font-weight: 600; font-size: 14px; flex: 1; }
+
+  .lr-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 5px;
+    flex-shrink: 0;
+  }
+  .lr-4  { background: rgba(244,63,94,.15);   color: var(--accent-4); }
+  .lr-5  { background: rgba(249,115,22,.15);  color: var(--accent-5); }
+  .lr-6  { background: rgba(234,179,8,.15);   color: var(--accent-6); }
+  .lr-7  { background: rgba(6,182,212,.15);   color: var(--accent-7); }
+  .lr-8  { background: rgba(168,85,247,.15);  color: var(--accent-8); }
+  .lr-9  { background: rgba(249,115,22,.15);  color: var(--accent-9); }
+  .lr-10 { background: rgba(6,182,212,.15);   color: var(--accent-10); }
+  .lr-11 { background: rgba(168,85,247,.15);  color: var(--accent-11); }
+  .lr-12 { background: rgba(34,197,94,.15);   color: var(--accent-12); }
+
+  .chevron { color: var(--muted); transition: transform .25s; flex-shrink: 0; }
+  .section.open .chevron { transform: rotate(180deg); }
+
+  .section-body { display: none; padding: 0 18px 18px; background: var(--surface); }
+  .section.open .section-body { display: block; }
+
+  .qa { margin-top: 14px; }
+
+  .question {
+    color: var(--accent-7);
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .question::before {
+    content: "?";
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: rgba(6,182,212,.15);
+    color: var(--accent-7);
+    border-radius: 4px;
+    padding: 1px 5px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .answer {
+    color: #c8ccd8;
+    margin-left: 28px;
+    margin-bottom: 14px;
+    font-size: 14px;
+  }
+
+  pre {
+    background: var(--code-bg);
+    border: 1px solid #1e2230;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin: 8px 0 10px 0;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: #abb2bf;
+  }
+  .kw  { color: #c678dd; }
+  .fn  { color: #61afef; }
+  .cm  { color: #5c6370; font-style: italic; }
+  .str { color: #98c379; }
+  .num { color: #d19a66; }
+  .tp  { color: #e5c07b; }
+  .op  { color: #56b6c2; }
+
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 14px; font-size: 13px; }
+  th {
+    background: var(--card); padding: 8px 12px; text-align: left;
+    font-weight: 600; font-size: 11px; text-transform: uppercase;
+    letter-spacing: .5px; color: var(--muted); border-bottom: 1px solid var(--border);
+  }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent-7); white-space: nowrap; }
+
+  .tip {
+    background: rgba(6,182,212,.07);
+    border-left: 3px solid var(--accent-7);
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    margin: 10px 0;
+    font-size: 13px;
+    color: #a8dff5;
+  }
+  .warn {
+    background: rgba(244,63,94,.07);
+    border-left: 3px solid var(--accent-4);
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    margin: 10px 0;
+    font-size: 13px;
+    color: #fca5b4;
+  }
+  .note {
+    background: rgba(234,179,8,.07);
+    border-left: 3px solid var(--accent-6);
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    margin: 10px 0;
+    font-size: 13px;
+    color: #fde68a;
+  }
+
+  mark {
+    background: rgba(6,182,212,.2);
+    color: var(--accent-7);
+    border-radius: 3px;
+    padding: 0 2px;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    background: rgba(255,255,255,.06);
+    border-radius: 4px;
+    padding: 1px 5px;
+  }
+
+  #no-results {
+    text-align: center; color: var(--muted);
+    padding: 60px 0; display: none; font-size: 14px;
+  }
+
+  p { margin-bottom: 8px; }
+  p:last-child { margin-bottom: 0; }
+  b { color: var(--text); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <h1>Шпаргалка <span>ЛР 4–12</span> · Pascal</h1>
+    <div class="search-wrap">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="search" type="text" placeholder="Поиск... например: while, array, string, Assign, procedure, Nil...">
+    </div>
+    <div class="tabs">
+      <button class="tab active" data-lr="all">Все</button>
+      <button class="tab" data-lr="4">ЛР 4 · Переменные</button>
+      <button class="tab" data-lr="5">ЛР 5 · Вычисления</button>
+      <button class="tab" data-lr="6">ЛР 6 · Условия</button>
+      <button class="tab" data-lr="7">ЛР 7 · Циклы</button>
+      <button class="tab" data-lr="8">ЛР 8 · Массивы/Строки</button>
+      <button class="tab" data-lr="9">ЛР 9 · Процедуры</button>
+      <button class="tab" data-lr="10">ЛР 10 · Файлы</button>
+      <button class="tab" data-lr="11">ЛР 11 · Указатели</button>
+      <button class="tab" data-lr="12">ЛР 12 · Модули</button>
+    </div>
+  </div>
+</header>
+
+<main>
+<div id="no-results">Ничего не найдено 🔍</div>
+<!-- ══════════════════════════════════════════
+     ЛР 4 — ПЕРЕМЕННЫЕ И ТИПЫ ДАННЫХ
+══════════════════════════════════════════ -->
+
+<div class="section open" data-lr="4">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-4">ЛР 4</span>
+    <span class="section-title">Структура программы на Pascal</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Как выглядит структура программы на Pascal?</div>
+      <div class="answer">
+<pre><span class="kw">program</span> ИмяПрограммы;
+<span class="kw">uses</span>
+    НазваниеМодуля;       <span class="cm">{ подключение библиотек }</span>
+<span class="kw">const</span>
+    N = <span class="num">10</span>;               <span class="cm">{ константы }</span>
+<span class="kw">var</span>
+    a: <span class="tp">Integer</span>;           <span class="cm">{ переменные }</span>
+<span class="kw">begin</span>
+    <span class="cm">{ операторы }</span>
+<span class="kw">end</span>.</pre>
+      </div>
+
+      <div class="question">Что такое точка входа в программу?</div>
+      <div class="answer">Главная процедура программы, с которой начинается выполнение. В Pascal — это блок между <mark>begin</mark> и <mark>end.</mark> (с точкой в конце). После выполнения всех операторов программа завершается.</div>
+
+      <div class="question">Чувствителен ли Pascal к регистру?</div>
+      <div class="answer">
+        <div class="tip">Нет! <code>var</code>, <code>Var</code> и <code>VAR</code> — одно и то же. Это касается всех ключевых слов и имён переменных.</div>
+      </div>
+
+      <div class="question">Как писать комментарии?</div>
+      <div class="answer">В фигурных скобках: <code>{ это комментарий }</code> или через <code>(*  *)</code>. Компилятор полностью игнорирует их содержимое.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="4">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-4">ЛР 4</span>
+    <span class="section-title">Переменные и константы</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое переменная?</div>
+      <div class="answer">Именованная область памяти, которая хранит <b>изменяемое</b> значение некоторого типа. У каждой переменной есть: имя (идентификатор), тип данных, значение и область видимости (глобальная / локальная).</div>
+
+      <div class="question">Как объявляются переменные?</div>
+      <div class="answer">
+<pre><span class="kw">var</span>
+    a: <span class="tp">Byte</span>;           <span class="cm">{ простое объявление }</span>
+    b, c: <span class="tp">Integer</span>;     <span class="cm">{ несколько переменных одного типа }</span>
+    d: <span class="tp">Word</span> = <span class="num">1</span>;       <span class="cm">{ объявление с начальным значением }</span></pre>
+      </div>
+
+      <div class="question">Чем константа отличается от переменной?</div>
+      <div class="answer">Константа — именованная область памяти с <b>неизменяемым</b> значением. Тип определяется компилятором автоматически. Изменить значение константы нельзя.
+<pre><span class="kw">const</span>
+    Pi = <span class="num">3.14159</span>;        <span class="cm">{ вещественная }</span>
+    MaxN = <span class="num">100</span>;          <span class="cm">{ целая }</span>
+    Letter = <span class="str">'A'</span>;        <span class="cm">{ символьная }</span></pre>
+      </div>
+
+      <div class="question">Что такое объявление и что такое определение (реализация)?</div>
+      <div class="answer"><b>Объявление</b> — сообщаем компилятору, что переменная существует и имеет тип. <b>Определение (реализация)</b> — присваиваем значение, выделяется память. В Pascal они чаще всего совмещены.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="4">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-4">ЛР 4</span>
+    <span class="section-title">Классификация типов данных</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Какие типы данных есть в Pascal?</div>
+      <div class="answer">
+        <table>
+          <tr><th>Группа</th><th>Типы</th></tr>
+          <tr><td>Целые</td><td>Byte, ShortInt, Word, SmallInt, Integer, Cardinal, Int64, QWord</td></tr>
+          <tr><td>Вещественные</td><td>Real, Single, Double, Extended</td></tr>
+          <tr><td>Символьные</td><td>Char, WideChar, String, WideString</td></tr>
+          <tr><td>Логический</td><td>Boolean (true / false)</td></tr>
+          <tr><td>Структурированные</td><td>Массивы (array), Записи (record), Множества (set), Файлы</td></tr>
+          <tr><td>Прочие</td><td>Указатели (Pointer), Процедурный тип</td></tr>
+        </table>
+      </div>
+
+      <div class="question">Что значит «порядковый тип»?</div>
+      <div class="answer">Тип, значения которого можно пронумеровать и сравнивать по порядку: целые, Boolean, Char, перечислимые, диапазонные. Используются как индексы массивов и параметры цикла for.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="4">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-4">ЛР 4</span>
+    <span class="section-title">Write / WriteLn / Read / ReadLn — ввод и вывод</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Чем Write отличается от WriteLn?</div>
+      <div class="answer"><mark>Write</mark> — выводит данные и оставляет курсор на той же строке. <mark>WriteLn</mark> — выводит данные и переходит на новую строку. Можно перечислять несколько значений через запятую.</div>
+
+      <div class="question">Как вывести вещественное число в заданном формате?</div>
+      <div class="answer">Используется запись <code>x:ширина:дробь</code>:
+<pre>x := -<span class="num">12345.12345</span>;
+WriteLn(x:<span class="num">3</span>:<span class="num">0</span>);    <span class="cm">{ нет дробной части: -12345 }</span>
+WriteLn(x:<span class="num">12</span>:<span class="num">5</span>);   <span class="cm">{ 12 позиций всего, 5 после точки }</span></pre>
+      </div>
+
+      <div class="question">Как работают Read и ReadLn?</div>
+      <div class="answer"><mark>Read</mark> — читает значение с клавиатуры, курсор остаётся на строке. <mark>ReadLn</mark> — читает значение и переходит на новую строку. При вводе числа Pascal сам преобразует строку в нужный тип, если тип переменной задан правильно.</div>
+
+      <div class="question">Что такое консоль?</div>
+      <div class="answer">Базовый текстовый интерфейс операционной системы. В простых программах на Pascal ввод и вывод производятся через консоль.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ЛР 5 — ВЫЧИСЛЕНИЯ
+══════════════════════════════════════════ -->
+
+<div class="section" data-lr="5">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-5">ЛР 5</span>
+    <span class="section-title">Целые типы данных и их диапазоны</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Какие целочисленные типы есть и чем они отличаются?</div>
+      <div class="answer">
+        <table>
+          <tr><th>Знаковый тип</th><th>Диапазон</th><th>Байт</th><th>Беззнаковый</th><th>Диапазон</th></tr>
+          <tr><td>ShortInt</td><td>-128 .. +127</td><td>1</td><td>Byte</td><td>0 .. 255</td></tr>
+          <tr><td>SmallInt</td><td>-32768 .. +32767</td><td>2</td><td>Word</td><td>0 .. 65535</td></tr>
+          <tr><td>Integer</td><td>-2³¹ .. +2³¹-1</td><td>4</td><td>Cardinal</td><td>0 .. +2³²-1</td></tr>
+          <tr><td>Int64</td><td>-2⁶³ .. +2⁶³-1</td><td>8</td><td>QWord</td><td>0 .. +2⁶⁴-1</td></tr>
+        </table>
+        <div class="note">Беззнаковые типы не хранят отрицательные числа, зато вмещают вдвое большее положительное число за те же байты.</div>
+      </div>
+
+      <div class="question">Почему важно знать диапазон типа?</div>
+      <div class="answer">Если результат вычисления выходит за диапазон типа — происходит <b>переполнение</b>: число «перематывается» и получается неверный результат. Например, Byte хранит 0–255: если написать <code>a := 255 + 1</code>, получим 0.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="5">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-5">ЛР 5</span>
+    <span class="section-title">Арифметические операторы</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Какие арифметические операторы есть в Pascal?</div>
+      <div class="answer">
+        <table>
+          <tr><th>Оператор</th><th>Операция</th><th>Применим к</th></tr>
+          <tr><td>+</td><td>Сложение</td><td>Целые и вещественные</td></tr>
+          <tr><td>-</td><td>Вычитание</td><td>Целые и вещественные</td></tr>
+          <tr><td>*</td><td>Умножение</td><td>Целые и вещественные</td></tr>
+          <tr><td>/</td><td>Деление (всегда вещественное!)</td><td>Целые и вещественные</td></tr>
+          <tr><td>div</td><td>Целочисленное деление (без остатка)</td><td>Только целые</td></tr>
+          <tr><td>mod</td><td>Остаток от деления</td><td>Только целые</td></tr>
+        </table>
+      </div>
+
+      <div class="question">Какой тип у результата арифметической операции?</div>
+      <div class="answer">Если <b>оба</b> операнда целые — результат <b>целый</b>. Если хотя бы один вещественный — результат <b>вещественный</b>. Результат <code>/</code> (деление) <b>всегда вещественный</b>, даже если оба операнда целые.</div>
+
+      <div class="question">Что такое MOD и DIV на примере?</div>
+      <div class="answer">
+<pre><span class="num">17</span> <span class="kw">div</span> <span class="num">5</span> = <span class="num">3</span>   <span class="cm">{ 17 = 5*3 + 2, берём только целую часть }</span>
+<span class="num">17</span> <span class="kw">mod</span> <span class="num">5</span> = <span class="num">2</span>   <span class="cm">{ остаток от деления }</span>
+<span class="cm">{ I mod J = I - (I div J) * J }</span></pre>
+        Знак результата <code>mod</code> совпадает со знаком <b>левого</b> операнда.
+        <div class="warn">Деление на ноль (<code>/ 0</code>, <code>div 0</code>, <code>mod 0</code>) вызывает ошибку выполнения!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="5">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-5">ЛР 5</span>
+    <span class="section-title">Вещественные типы</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Какие вещественные типы есть в Pascal?</div>
+      <div class="answer">
+        <table>
+          <tr><th>Тип</th><th>Значащих цифр</th><th>Байт</th></tr>
+          <tr><td>Single</td><td>7–8</td><td>4</td></tr>
+          <tr><td>Double</td><td>15–16</td><td>8</td></tr>
+          <tr><td>Extended</td><td>19–20</td><td>10</td></tr>
+          <tr><td>Real</td><td>зависит от платформы</td><td>4 или 8</td></tr>
+        </table>
+        Чем больше значащих цифр — тем точнее вычисления, но больше памяти. Для большинства задач достаточно <code>Double</code>.
+      </div>
+
+      <div class="question">Что такое число с плавающей точкой?</div>
+      <div class="answer">Способ хранить очень большие или очень маленькие числа: число разбивается на мантиссу и порядок. Например, 1.5E-45 — это 1.5 × 10⁻⁴⁵. Это позволяет хранить огромный диапазон значений в ограниченном числе байт, но с ограниченной точностью.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="5">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-5">ЛР 5</span>
+    <span class="section-title">Стандартные математические функции</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Какие встроенные функции есть для вычислений?</div>
+      <div class="answer">
+        <table>
+          <tr><th>Функция</th><th>Результат</th><th>Пример</th></tr>
+          <tr><td>abs(x)</td><td>Модуль числа</td><td>abs(-5) = 5</td></tr>
+          <tr><td>sqr(x)</td><td>Квадрат числа x²</td><td>sqr(4) = 16</td></tr>
+          <tr><td>sqrt(x)</td><td>Квадратный корень √x (вещественный)</td><td>sqrt(9) = 3.0</td></tr>
+          <tr><td>sin(x)</td><td>Синус (x в радианах)</td><td></td></tr>
+          <tr><td>cos(x)</td><td>Косинус (x в радианах)</td><td></td></tr>
+          <tr><td>arctan(x)</td><td>Арктангенс (в радианах)</td><td></td></tr>
+          <tr><td>ln(x)</td><td>Натуральный логарифм</td><td></td></tr>
+          <tr><td>exp(x)</td><td>Экспонента eˣ</td><td></td></tr>
+          <tr><td>trunc(x)</td><td>Отбросить дробную часть (целый)</td><td>trunc(3.9) = 3</td></tr>
+          <tr><td>round(x)</td><td>Округлить до целого</td><td>round(3.6) = 4</td></tr>
+          <tr><td>odd(x)</td><td>true если x нечётное</td><td>odd(5) = true</td></tr>
+          <tr><td>random(x)</td><td>Случайное целое 0..x-1</td><td>random(10) → 0..9</td></tr>
+          <tr><td>succ(x)</td><td>Следующее значение (x+1)</td><td></td></tr>
+          <tr><td>pred(x)</td><td>Предыдущее значение (x-1)</td><td></td></tr>
+          <tr><td>inc(x)</td><td>Увеличить на 1 (x := x+1)</td><td></td></tr>
+          <tr><td>dec(x)</td><td>Уменьшить на 1 (x := x-1)</td><td></td></tr>
+        </table>
+      </div>
+
+      <div class="question">Как возвести число в произвольную степень?</div>
+      <div class="answer">Встроенной операции нет. Используется формула через exp и ln: <code>x^n = exp(n * ln(x))</code>. Или подключить модуль <code>Math</code> и использовать <code>Power(x, n)</code>.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ЛР 6 — УСЛОВНЫЙ ОПЕРАТОР
+══════════════════════════════════════════ -->
+
+<div class="section" data-lr="6">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-6">ЛР 6</span>
+    <span class="section-title">Оператор if — полная и неполная форма</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое условный оператор if?</div>
+      <div class="answer">Оператор ветвления — позволяет выполнять разные блоки кода в зависимости от условия.</div>
+
+      <div class="question">Как выглядят полная и неполная формы?</div>
+      <div class="answer">
+<pre><span class="cm">{ Полная форма }</span>
+<span class="kw">if</span> условие <span class="kw">then</span>
+<span class="kw">begin</span>
+    <span class="cm">{ выполняется если условие ИСТИННО }</span>
+<span class="kw">end</span>
+<span class="kw">else</span>
+<span class="kw">begin</span>
+    <span class="cm">{ выполняется если условие ЛОЖНО }</span>
+<span class="kw">end</span>;
+
+<span class="cm">{ Неполная форма — без else }</span>
+<span class="kw">if</span> условие <span class="kw">then</span>
+<span class="kw">begin</span>
+    <span class="cm">{ выполняется только при истинном условии }</span>
+<span class="kw">end</span>;</pre>
+      </div>
+
+      <div class="question">Когда можно не писать begin/end?</div>
+      <div class="answer">Если внутри блока <b>только один оператор</b>, операторные скобки необязательны:
+<pre><span class="kw">if</span> a = b <span class="kw">then</span> c := <span class="num">1</span>
+<span class="kw">else</span> c := <span class="num">0</span>;</pre>
+        <div class="warn">Перед <code>else</code> точка с запятой НЕ ставится! Она означала бы конец оператора if, и else стал бы ошибкой.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="6">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-6">ЛР 6</span>
+    <span class="section-title">Логические операции и сложные условия</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Какие операции сравнения есть в Pascal?</div>
+      <div class="answer">
+        <table>
+          <tr><th>Оператор</th><th>Смысл</th></tr>
+          <tr><td>=</td><td>равно</td></tr>
+          <tr><td>&lt;&gt;</td><td>не равно</td></tr>
+          <tr><td>&lt;</td><td>меньше</td></tr>
+          <tr><td>&lt;=</td><td>меньше или равно</td></tr>
+          <tr><td>&gt;</td><td>больше</td></tr>
+          <tr><td>&gt;=</td><td>больше или равно</td></tr>
+        </table>
+      </div>
+
+      <div class="question">Какие логические операции используются в условиях?</div>
+      <div class="answer">
+        <table>
+          <tr><th>Операция</th><th>Смысл</th><th>Пример</th></tr>
+          <tr><td>and</td><td>И — оба условия должны быть истинны</td><td>(a > 0) and (b > 0)</td></tr>
+          <tr><td>or</td><td>ИЛИ — хотя бы одно истинно</td><td>(a = 0) or (b = 0)</td></tr>
+          <tr><td>not</td><td>НЕ — отрицание</td><td>not (a = b)</td></tr>
+        </table>
+      </div>
+
+      <div class="question">Каков приоритет операций в условиях?</div>
+      <div class="answer">Порядок выполнения (от высшего к низшему): скобки → <code>not</code> → <code>and</code> → <code>or</code> → операции сравнения (<, >, =...).
+        <div class="warn">Операции сравнения имеют НИЗШИЙ приоритет, поэтому их ОБЯЗАТЕЛЬНО берём в скобки в сложных условиях:
+<pre><span class="kw">if</span> (a = b) <span class="kw">or</span> (b &lt; c) <span class="kw">and</span> (c &lt;&gt; d) <span class="kw">then</span> ...</pre>
+        </div>
+      </div>
+
+      <div class="question">Чем отличаются вложенные if от or?</div>
+      <div class="answer">Два подряд идущих <code>if</code> — это <b>не</b> то же самое, что <code>or</code>. Если первое условие ложно, второй <code>if</code> всё равно проверяется отдельно, а сообщение может выводиться дважды. Для «хотя бы одно из» используй <code>or</code>.
+<pre><span class="cm">{ ПРАВИЛЬНО }</span>
+<span class="kw">if</span> (x &lt; <span class="num">5</span>) <span class="kw">or</span> (y &lt; <span class="num">5</span>) <span class="kw">then</span> WriteLn(<span class="str">'хотя бы одна меньше 5'</span>);</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="6">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-6">ЛР 6</span>
+    <span class="section-title">Вложенные условия</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое вложенный if и как он работает?</div>
+      <div class="answer">Оператор <code>if</code> внутри другого <code>if</code>. Эквивалентен логическому <code>and</code>:
+<pre><span class="cm">{ Эти две записи одинаковы: }</span>
+<span class="kw">if</span> (x &gt; <span class="num">5</span>) <span class="kw">and</span> (x &lt; <span class="num">10</span>) <span class="kw">then</span> WriteLn(<span class="str">'в интервале'</span>);
+
+<span class="kw">if</span> (x &gt; <span class="num">5</span>) <span class="kw">then</span>
+    <span class="kw">if</span> (x &lt; <span class="num">10</span>) <span class="kw">then</span>
+        WriteLn(<span class="str">'в интервале'</span>);</pre>
+      </div>
+
+      <div class="question">Как реализовать несколько вариантов (цепочка else if)?</div>
+      <div class="answer">
+<pre><span class="kw">if</span> weight &lt; <span class="num">60</span> <span class="kw">then</span>
+    WriteLn(<span class="str">'лёгкий вес'</span>)
+<span class="kw">else if</span> weight &lt; <span class="num">64</span> <span class="kw">then</span>
+    WriteLn(<span class="str">'первый полусредний'</span>)
+<span class="kw">else if</span> weight &lt; <span class="num">69</span> <span class="kw">then</span>
+    WriteLn(<span class="str">'полусредний'</span>)
+<span class="kw">else</span>
+    WriteLn(<span class="str">'выше категории'</span>);</pre>
+        Условия проверяются сверху вниз; выполняется первый подходящий блок.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ЛР 7 — ЦИКЛЫ
+══════════════════════════════════════════ -->
+
+<div class="section" data-lr="7">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-7">ЛР 7</span>
+    <span class="section-title">Цикл while — с предусловием</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое цикл? Что такое итерация и итератор?</div>
+      <div class="answer"><b>Цикл</b> — выполнение блока кода несколько раз. <b>Итерация</b> — одно выполнение тела цикла. <b>Итератор (счётчик)</b> — переменная, отсчитывающая количество повторений.</div>
+
+      <div class="question">Как работает while?</div>
+      <div class="answer">Условие проверяется <b>до</b> выполнения тела. Если с самого начала ложно — тело не выполнится ни разу.
+<pre><span class="kw">while</span> условие <span class="kw">do</span>
+<span class="kw">begin</span>
+    <span class="cm">{ тело цикла }</span>
+<span class="kw">end</span>;</pre>
+      </div>
+
+      <div class="question">Когда использовать while?</div>
+      <div class="answer">Когда заранее <b>неизвестно</b> точное количество итераций. Например: читать числа пока не введут 0, повторять пока пользователь вводит неверное значение.</div>
+
+      <div class="question">Что такое зацикливание?</div>
+      <div class="answer">
+        <div class="warn">Если условие while всегда остаётся истинным — программа зависнет. Пример: <code>while 2 &gt; 1 do write(1);</code> — бесконечный цикл. Всегда убедись, что внутри тела цикла условие когда-нибудь станет ложным.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="7">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-7">ЛР 7</span>
+    <span class="section-title">Цикл repeat..until — с постусловием</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Как работает repeat..until?</div>
+      <div class="answer">Условие проверяется <b>после</b> выполнения тела. Тело всегда выполняется <b>хотя бы один раз</b>. Цикл <b>прекращается</b> когда условие становится истинным (противоположно while!).
+<pre><span class="kw">repeat</span>
+    <span class="cm">{ тело цикла }</span>
+<span class="kw">until</span> условие;</pre>
+      </div>
+
+      <div class="question">Чем repeat отличается от while?</div>
+      <div class="answer">
+        <table>
+          <tr><th></th><th>while</th><th>repeat..until</th></tr>
+          <tr><td>Проверка условия</td><td>ДО тела</td><td>ПОСЛЕ тела</td></tr>
+          <tr><td>Минимум итераций</td><td>0 (может не выполниться)</td><td>1 (всегда хотя бы раз)</td></tr>
+          <tr><td>Выход из цикла</td><td>когда условие ЛОЖНО</td><td>когда условие ИСТИННО</td></tr>
+          <tr><td>begin/end</td><td>нужны для нескольких операторов</td><td>не нужны (repeat/until — скобки)</td></tr>
+        </table>
+      </div>
+
+      <div class="question">Когда удобен repeat?</div>
+      <div class="answer">Когда нужно выполнить действие <b>хотя бы раз</b>, а потом проверить. Типичный пример — ввод с клавиатуры с проверкой корректности:
+<pre><span class="kw">repeat</span>
+    Write(<span class="str">'Введите чётное число: '</span>);
+    ReadLn(n);
+    <span class="kw">if</span> n <span class="kw">mod</span> <span class="num">2</span> &lt;&gt; <span class="num">0</span> <span class="kw">then</span> WriteLn(<span class="str">'Ошибка!'</span>);
+<span class="kw">until</span> n <span class="kw">mod</span> <span class="num">2</span> = <span class="num">0</span>;</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="7">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-7">ЛР 7</span>
+    <span class="section-title">Цикл for — со счётчиком</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Как работает цикл for?</div>
+      <div class="answer">Счётчик автоматически изменяется от начального до конечного значения. Количество итераций известно заранее.
+<pre><span class="cm">{ увеличение: to }</span>
+<span class="kw">for</span> i := <span class="num">1</span> <span class="kw">to</span> <span class="num">10</span> <span class="kw">do</span>
+    WriteLn(i);    <span class="cm">{ 1, 2, 3 ... 10 }</span>
+
+<span class="cm">{ уменьшение: downto }</span>
+<span class="kw">for</span> i := <span class="num">10</span> <span class="kw">downto</span> <span class="num">1</span> <span class="kw">do</span>
+    WriteLn(i);    <span class="cm">{ 10, 9, 8 ... 1 }</span></pre>
+      </div>
+
+      <div class="question">Каким типом должна быть переменная-параметр for?</div>
+      <div class="answer">Только <b>порядковым</b>: целые, Boolean, Char, перечислимый тип. Не может быть вещественным.</div>
+
+      <div class="question">Можно ли изменять счётчик внутри тела цикла?</div>
+      <div class="answer">
+        <div class="warn">Технически можно, но это логическая ошибка! Например, если внутри тела написать <code>i := 1</code>, цикл станет бесконечным. Никогда не изменяй счётчик for внутри тела цикла.</div>
+      </div>
+
+      <div class="question">Что будет если начальное значение больше конечного (в to)?</div>
+      <div class="answer">Тело цикла не выполнится ни разу. Аналогично: <code>downto</code> не выполняется если начальное меньше конечного.</div>
+
+      <div class="question">Как делать вложенные циклы for?</div>
+      <div class="answer">Использовать <b>разные</b> переменные для внешнего и внутреннего цикла:
+<pre><span class="kw">for</span> i := <span class="num">1</span> <span class="kw">to</span> <span class="num">10</span> <span class="kw">do</span>
+<span class="kw">begin</span>
+    <span class="kw">for</span> j := <span class="num">1</span> <span class="kw">to</span> <span class="num">10</span> <span class="kw">do</span>   <span class="cm">{ j — другая переменная! }</span>
+        Write((i*j):<span class="num">4</span>);
+    WriteLn;
+<span class="kw">end</span>;</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ЛР 8 — МАССИВЫ И СТРОКИ
+══════════════════════════════════════════ -->
+
+<div class="section" data-lr="8">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-8">ЛР 8</span>
+    <span class="section-title">Массивы — объявление и работа</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое массив?</div>
+      <div class="answer">Набор элементов <b>одного типа</b>, каждый из которых имеет свой номер — <b>индекс</b>. Позволяет хранить много значений под одним именем и обращаться к ним по номеру.</div>
+
+      <div class="question">Как объявить массив?</div>
+      <div class="answer">
+<pre><span class="kw">var</span>
+    a: <span class="kw">array</span>[<span class="num">1</span>..<span class="num">10</span>] <span class="kw">of</span> <span class="tp">Integer</span>;      <span class="cm">{ 10 целых чисел }</span>
+    b: <span class="kw">array</span>[<span class="str">'a'</span>..<span class="str">'z'</span>] <span class="kw">of</span> <span class="tp">Char</span>;    <span class="cm">{ индекс — символ }</span>
+    m: <span class="kw">array</span>[<span class="num">1</span>..<span class="num">3</span>, <span class="num">1</span>..<span class="num">4</span>] <span class="kw">of</span> <span class="tp">Real</span>;   <span class="cm">{ двумерный (матрица 3×4) }</span></pre>
+      </div>
+
+      <div class="question">Как обратиться к элементу массива?</div>
+      <div class="answer">По индексу в квадратных скобках: <code>a[3]</code> — третий элемент. Нумерация начинается с того значения, что указано при объявлении (чаще с 1, реже с 0).</div>
+
+      <div class="question">Как заполнить и вывести массив через цикл?</div>
+      <div class="answer">
+<pre><span class="kw">var</span> a: <span class="kw">array</span>[<span class="num">1</span>..<span class="num">10</span>] <span class="kw">of</span> <span class="tp">longint</span>; i: <span class="tp">integer</span>;
+<span class="kw">begin</span>
+    <span class="cm">{ заполнение }</span>
+    <span class="kw">for</span> i := <span class="num">1</span> <span class="kw">to</span> <span class="num">10</span> <span class="kw">do</span>
+        Read(a[i]);
+    <span class="cm">{ вывод }</span>
+    <span class="kw">for</span> i := <span class="num">1</span> <span class="kw">to</span> <span class="num">10</span> <span class="kw">do</span>
+        Write(a[i], <span class="str">' '</span>);
+<span class="kw">end</span>.</pre>
+      </div>
+
+      <div class="question">Почему размер массива лучше задавать через константу?</div>
+      <div class="answer">
+        <div class="tip">Если написать <code>const N = 30;</code>, то при изменении размера достаточно поменять одну цифру в начале программы — все циклы подстроятся автоматически. Без константы придётся менять число в каждом месте, где оно встречается.</div>
+      </div>
+
+      <div class="question">Что произойдёт при выходе за границы массива?</div>
+      <div class="answer">
+        <div class="warn">Серьёзная ошибка! Обращение к a[0] если массив объявлен с 1, или к a[11] если размер 10 — это запись в чужую память. Программа может работать непредсказуемо или аварийно завершиться.</div>
+      </div>
+
+      <div class="question">Как инициализировать массив при объявлении?</div>
+      <div class="answer">
+<pre><span class="kw">var</span>
+    a: <span class="kw">array</span>[<span class="num">1</span>..<span class="num">5</span>] <span class="kw">of</span> <span class="tp">integer</span> := (<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>);
+    m: <span class="kw">array</span>[<span class="num">1</span>..<span class="num">2</span>, <span class="num">1</span>..<span class="num">3</span>] <span class="kw">of</span> <span class="tp">real</span> := ((<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>), (<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>));</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="8">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-8">ЛР 8</span>
+    <span class="section-title">Символьный тип Char и коды символов</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое тип Char?</div>
+      <div class="answer">Хранит один символ. Занимает 1 байт (в Free Pascal, Turbo Pascal). Каждый символ имеет числовой код (например, 'A' = 65 в кодировке ASCII).</div>
+
+      <div class="question">Что делают функции Chr и Ord?</div>
+      <div class="answer"><mark>Chr(n)</mark> — возвращает символ с кодом n. <mark>Ord(c)</mark> — возвращает числовой код символа c.
+<pre><span class="cm">{ Получить следующую букву алфавита }</span>
+c := <span class="fn">Chr</span>(<span class="fn">Ord</span>(<span class="str">'a'</span>) + <span class="num">1</span>);   <span class="cm">{ c = 'b' }</span>
+
+<span class="cm">{ Получить цифровое значение символа-цифры }</span>
+x := <span class="fn">Ord</span>(c) - <span class="fn">Ord</span>(<span class="str">'0'</span>);     <span class="cm">{ '7' → 7 }</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="8">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-8">ЛР 8</span>
+    <span class="section-title">Строки (string) — основы</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое строка в Pascal?</div>
+      <div class="answer">Тип <mark>string</mark> — последовательность символов Char. Можно обращаться к отдельному символу по индексу: <code>s[i]</code> — i-й символ (нумерация с 1). Для строк фиксированной длины: <code>string[20]</code>.</div>
+
+      <div class="question">Что такое конкатенация строк?</div>
+      <div class="answer">Операция <mark>+</mark> для строк — склеивает их вместе:
+<pre><span class="str">'Привет'</span> + <span class="str">', '</span> + <span class="str">'мир'</span> = <span class="str">'Привет, мир'</span></pre>
+      </div>
+
+      <div class="question">Можно ли сравнивать строки?</div>
+      <div class="answer">Да, все операции сравнения работают: <code>=</code>, <code>&lt;&gt;</code>, <code>&lt;</code>, <code>&gt;</code>. Сравнение лексикографическое (по кодам символов).</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="8">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-8">ЛР 8</span>
+    <span class="section-title">Стандартные функции обработки строк</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Какие функции работы со строками есть в Pascal?</div>
+      <div class="answer">
+        <table>
+          <tr><th>Функция</th><th>Что делает</th><th>Пример</th></tr>
+          <tr><td>Length(s)</td><td>Длина строки</td><td>Length('abc') = 3</td></tr>
+          <tr><td>Pos(sub, s)</td><td>Позиция подстроки sub в s (0 если не найдена)</td><td>Pos('bc','abcd') = 2</td></tr>
+          <tr><td>Copy(s, i, n)</td><td>Подстрока из s: n символов начиная с позиции i</td><td>Copy('abcde',2,3) = 'bcd'</td></tr>
+          <tr><td>Insert(sub, s, i)</td><td>Вставить sub в s начиная с позиции i (изменяет s)</td><td></td></tr>
+          <tr><td>Delete(s, i, n)</td><td>Удалить n символов из s начиная с позиции i</td><td></td></tr>
+          <tr><td>UpperCase(s)</td><td>В верхний регистр</td><td>'hello'→'HELLO'</td></tr>
+          <tr><td>LowerCase(s)</td><td>В нижний регистр</td><td>'HI'→'hi'</td></tr>
+          <tr><td>StrToInt(s)</td><td>Строка → целое число</td><td>StrToInt('42') = 42</td></tr>
+          <tr><td>IntToStr(n)</td><td>Целое → строка</td><td>IntToStr(42) = '42'</td></tr>
+          <tr><td>Val(s, v, err)</td><td>Строка → число с кодом ошибки (err=0 если успех)</td><td></td></tr>
+          <tr><td>Str(n, s)</td><td>Число → строка</td><td></td></tr>
+        </table>
+      </div>
+
+      <div class="question">Как «вырезать» часть слова и склеить по-новому?</div>
+      <div class="answer">Используй <code>Copy</code> для вырезания и <code>+</code> для склейки:
+<pre><span class="kw">var</span> s: <span class="tp">string</span>;
+s := <span class="str">'информатика'</span>;
+<span class="cm">{ вырезать 'форма' — 5 символов с позиции 3 }</span>
+WriteLn(<span class="fn">Copy</span>(s, <span class="num">3</span>, <span class="num">5</span>));   <span class="cm">{ форма }</span>
+<span class="cm">{ вырезать 'тик' — 3 символа с позиции 9 }</span>
+WriteLn(<span class="fn">Copy</span>(s, <span class="num">9</span>, <span class="num">3</span>));   <span class="cm">{ тик }</span></pre>
+      </div>
+
+      <div class="question">Как найти нужный символ в строке?</div>
+      <div class="answer">Цикл по индексам от 1 до <code>Length(s)</code>, проверяя <code>s[i]</code> на каждом шаге. Или использовать <code>Pos</code> для поиска подстроки.
+<pre><span class="kw">for</span> i := <span class="num">1</span> <span class="kw">to</span> <span class="fn">Length</span>(s) <span class="kw">do</span>
+    <span class="kw">if</span> s[i] = <span class="str">' '</span> <span class="kw">then</span>
+        Inc(wordCount);  <span class="cm">{ считаем пробелы }</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     ЛР 9 — ПРОЦЕДУРЫ И ФУНКЦИИ
+════════════════════════════════════════════════════ -->
+
+<div class="section open" data-lr="9">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-9">ЛР 9</span>
+    <span class="section-title">Что такое подпрограмма? Зачем она нужна?</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое подпрограмма?</div>
+      <div class="answer">Подпрограмма — это именованный блок кода, который можно вызвать из разных мест программы. В Pascal бывают двух видов: <mark>procedure</mark> (процедура) и <mark>function</mark> (функция).</div>
+
+      <div class="question">Зачем использовать подпрограммы?</div>
+      <div class="answer">
+        Три главных причины:<br>
+        1. <b>Устранение повторений</b> — один раз написал, вызываешь сколько угодно.<br>
+        2. <b>Структурирование</b> — задача делится на подзадачи, программу легче читать.<br>
+        3. <b>Тестирование</b> — ошибку легче найти и исправить, если код разбит на части.
+      </div>
+
+      <div class="question">Чем процедура отличается от функции?</div>
+      <div class="answer"><b>Функция</b> возвращает значение — его можно использовать в выражении. <b>Процедура</b> значение не возвращает — просто выполняет действие. Используй функцию, когда нужен результат; процедуру — когда нужно что-то сделать или вернуть несколько значений через параметры <mark>var</mark>.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="9">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-9">ЛР 9</span>
+    <span class="section-title">Синтаксис объявления процедуры и функции</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Как выглядит объявление процедуры?</div>
+      <div class="answer">
+<pre><span class="kw">procedure</span> <span class="fn">DoAdd</span>(a, b: <span class="tp">real</span>; <span class="kw">var</span> res: <span class="tp">real</span>);
+<span class="kw">begin</span>
+    res := a + b;   <span class="cm">{ res передан по ссылке — оригинал изменится }</span>
+<span class="kw">end</span>;</pre>
+      </div>
+
+      <div class="question">Как выглядит объявление функции?</div>
+      <div class="answer">
+<pre><span class="kw">function</span> <span class="fn">Add</span>(a, b: <span class="tp">real</span>): <span class="tp">real</span>;   <span class="cm">{ после : указан тип возвращаемого значения }</span>
+<span class="kw">begin</span>
+    Add := a + b;    <span class="cm">{ вариант 1: присваиваем имени функции }</span>
+    <span class="cm">{ Result := a + b;  вариант 2: используем Result }</span>
+<span class="kw">end</span>;</pre>
+      </div>
+
+      <div class="question">Где должна быть объявлена подпрограмма?</div>
+      <div class="answer">До места первого вызова — в разделе описаний программы. Компилятор читает сверху вниз и должен "знать" о подпрограмме до её использования.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="9">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-9">ЛР 9</span>
+    <span class="section-title">Параметры: передача по значению и по ссылке</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое формальные параметры?</div>
+      <div class="answer">Переменные, указанные в заголовке подпрограммы. При вызове им передаются реальные значения (фактические параметры). Формальные — это "заглушки", фактические — настоящие данные.</div>
+
+      <div class="question">Что значит передача по значению?</div>
+      <div class="answer">Внутрь подпрограммы передаётся <b>копия</b> переменной. Любые изменения не затрагивают оригинал. Это поведение по умолчанию — без ключевого слова.</div>
+
+      <div class="question">Что значит передача по ссылке (var)?</div>
+      <div class="answer">Перед параметром стоит <mark>var</mark>. Передаётся <b>адрес</b> переменной. Изменения внутри подпрограммы <b>изменяют оригинал</b>. Используется, когда нужно вернуть несколько значений или изменить входной параметр.
+<pre><span class="kw">procedure</span> <span class="fn">Swap</span>(<span class="kw">var</span> a, b: <span class="tp">integer</span>);
+<span class="kw">var</span> t: <span class="tp">integer</span>;
+<span class="kw">begin</span>
+    t := a; a := b; b := t;
+<span class="kw">end</span>;
+<span class="cm">{ после вызова Swap(x, y) — x и y реально поменяются местами }</span></pre>
+      </div>
+
+      <div class="question">Что такое параметры const?</div>
+      <div class="answer">Параметр передаётся по ссылке (эффективно), но изменить его внутри нельзя — компилятор запретит. Используется для оптимизации при передаче больших структур.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="9">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-9">ЛР 9</span>
+    <span class="section-title">Result, возврат значения, рекурсия</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Как вернуть значение из функции?</div>
+      <div class="answer">Два способа: присвоить значение <mark>имени функции</mark> или специальной переменной <mark>Result</mark>. Оба работают одинаково.</div>
+
+      <div class="question">Чем Result лучше имени функции?</div>
+      <div class="answer"><code>Result</code> можно использовать в выражениях (например, <code>if Result > 0 then</code>), а имя функции в выражении трактуется как <b>рекурсивный вызов</b>.
+<pre><span class="kw">function</span> <span class="fn">MinElement</span>(a: <span class="kw">array of</span> <span class="tp">real</span>): <span class="tp">real</span>;
+<span class="kw">var</span> i: <span class="tp">Integer</span>;
+<span class="kw">begin</span>
+    Result := a[<span class="num">0</span>];
+    <span class="kw">for</span> i := <span class="num">1</span> <span class="kw">to</span> Length(a)-<span class="num">1</span> <span class="kw">do</span>
+        <span class="kw">if</span> a[i] < Result <span class="kw">then</span>
+            Result := a[i];  <span class="cm">{ используем в выражении — ок }</span>
+<span class="kw">end</span>;</pre>
+      </div>
+
+      <div class="question">Прерывается ли функция при присвоении Result?</div>
+      <div class="answer">
+        <div class="warn">В Pascal — НЕТ! Функция продолжает выполняться даже после <code>Result := ...</code>. Это важное отличие от C, Java, Python, где <code>return</code> немедленно прерывает выполнение.</div>
+      </div>
+
+      <div class="question">Что такое рекурсия?</div>
+      <div class="answer">Вызов функции из самой себя. Обязательно должно быть условие выхода (база рекурсии), иначе бесконечный цикл.
+<pre><span class="kw">function</span> <span class="fn">Factorial</span>(n: <span class="tp">integer</span>): <span class="tp">integer</span>;
+<span class="kw">begin</span>
+    <span class="kw">if</span> n <= <span class="num">1</span> <span class="kw">then</span> Result := <span class="num">1</span>
+    <span class="kw">else</span> Result := n * Factorial(n - <span class="num">1</span>);
+<span class="kw">end</span>;</pre>
+      </div>
+
+      <div class="question">Что будет, если не присвоить Result?</div>
+      <div class="answer">Функция вернёт <b>непредсказуемое значение</b> (мусор из памяти). Это частая ошибка.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     ЛР 10 — ФАЙЛЫ
+════════════════════════════════════════════════════ -->
+
+<div class="section" data-lr="10">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-10">ЛР 10</span>
+    <span class="section-title">Виды файлов в Pascal</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Чем текстовый файл отличается от бинарного?</div>
+      <div class="answer"><b>Текстовый</b> — данные хранятся как строки символов. Число 42 будет записано как два символа '4' и '2'. Удобно читать в блокноте. <b>Бинарный</b> — данные хранятся так же, как в памяти компьютера. Число 42 занимает ровно 2/4 байта в двоичном виде. Быстрее, компактнее, но нечитаем "глазами".</div>
+
+      <div class="question">Какие виды файловых переменных есть в Pascal?</div>
+      <div class="answer">
+        <table>
+          <tr><th>Объявление</th><th>Тип</th><th>Применение</th></tr>
+          <tr><td>var f: Text</td><td>Текстовый</td><td>Строки, числа как текст</td></tr>
+          <tr><td>var f: file of integer</td><td>Типизированный бинарный</td><td>Однородные данные (все Integer, все Real...)</td></tr>
+          <tr><td>var f: file</td><td>Нетипизированный бинарный</td><td>Произвольные байты, копирование файлов</td></tr>
+        </table>
+        <div class="warn">Нельзя писать <code>file of string</code>, так как <code>string</code> имеет переменную длину. Нужно создать тип: <code>type Str20 = string[20];</code> и использовать его.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="10">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-10">ЛР 10</span>
+    <span class="section-title">Процедуры открытия, закрытия, работы с файлом</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое Assign и зачем он нужен?</div>
+      <div class="answer">Связывает файловую переменную с именем файла на диске. Без этого шага с файлом нельзя работать. Вызывается <b>первым</b>, до любого открытия.
+<pre>Assign(f, <span class="str">'output.txt'</span>);  <span class="cm">{ связать f с файлом output.txt }</span></pre>
+      </div>
+
+      <div class="question">Чем Reset отличается от Rewrite?</div>
+      <div class="answer">
+        <table>
+          <tr><th>Процедура</th><th>Действие</th><th>Особенность</th></tr>
+          <tr><td>Reset(f)</td><td>Открыть для чтения</td><td>Для текстовых — только чтение. Для бинарных — чтение И запись. Файл должен существовать!</td></tr>
+          <tr><td>Rewrite(f)</td><td>Открыть для записи</td><td>Создаёт новый файл. Если файл уже есть — УНИЧТОЖАЕТ его содержимое!</td></tr>
+          <tr><td>Append(f)</td><td>Открыть для дозаписи</td><td>Только для текстовых. Добавляет в конец, не удаляет старое.</td></tr>
+        </table>
+      </div>
+
+      <div class="question">Что такое Close и почему важно его вызывать?</div>
+      <div class="answer">Закрывает файл. Файловая система <b>блокирует файл</b> пока он открыт — другие программы не могут его использовать. Также без Close данные из буфера могут не записаться на диск. Всегда закрывай файл после окончания работы с ним.</div>
+
+      <div class="question">Что делает Flush?</div>
+      <div class="answer">Принудительно записывает содержимое буфера на диск, не закрывая файл. Используется если нужно гарантировать запись данных до закрытия.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="10">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-10">ЛР 10</span>
+    <span class="section-title">Чтение, запись, навигация по файлу</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Как прочитать файл строчка за строчкой?</div>
+      <div class="answer">
+<pre><span class="kw">var</span> f: <span class="tp">text</span>; s: <span class="tp">string</span>;
+<span class="kw">begin</span>
+    Assign(f, <span class="str">'file.txt'</span>);
+    Reset(f);
+    <span class="kw">while not</span> Eof(f) <span class="kw">do</span>
+    <span class="kw">begin</span>
+        Readln(f, s);     <span class="cm">{ читаем строку }</span>
+        writeln(s);
+    <span class="kw">end</span>;
+    Close(f);
+<span class="kw">end</span>;</pre>
+      </div>
+
+      <div class="question">Что такое Eof и Eoln?</div>
+      <div class="answer"><mark>Eof(f)</mark> — возвращает <code>true</code>, если достигнут конец файла. Используется в цикле при чтении. <mark>Eoln(f)</mark> — возвращает <code>true</code>, если достигнут конец строки в текстовом файле.</div>
+
+      <div class="question">Что такое SeekEof и SeekEoln?</div>
+      <div class="answer">Аналоги <code>Eof</code> и <code>Eoln</code>, но сначала <b>пропускают пробельные символы</b> (пробелы, табуляции). Удобны при чтении чисел, разделённых пробелами.</div>
+
+      <div class="question">Что такое Seek, FilePos, FileSize?</div>
+      <div class="answer">Для <b>бинарных</b> файлов: <mark>Seek(f, n)</mark> — перемещает указатель на элемент с номером n (прямой доступ). <mark>FilePos(f)</mark> — возвращает текущую позицию указателя. <mark>FileSize(f)</mark> — количество элементов в типизированном файле (или байт в нетипизированном).</div>
+
+      <div class="question">Что делает Truncate?</div>
+      <div class="answer">Обрезает файл начиная с текущей позиции указателя — всё после неё удаляется. Работает только с бинарными файлами.</div>
+
+      <div class="question">Как переименовать или удалить файл?</div>
+      <div class="answer"><mark>Rename(f, 'newname.txt')</mark> — переименовывает файл, связанный с переменной. <mark>Erase(f)</mark> — удаляет файл. Важно: файл при этом должен быть <b>закрыт</b>.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="10">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-10">ЛР 10</span>
+    <span class="section-title">Типизированный файл — примеры и типичные ошибки</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Как работать с типизированным файлом?</div>
+      <div class="answer">
+<pre><span class="kw">var</span> f: <span class="kw">file of</span> <span class="tp">integer</span>; num: <span class="tp">integer</span>; i: <span class="tp">integer</span>;
+<span class="kw">begin</span>
+    Assign(f, <span class="str">'nums.dat'</span>);
+    Rewrite(f);                      <span class="cm">{ создаём файл }</span>
+    <span class="kw">for</span> i := <span class="num">1</span> <span class="kw">to</span> <span class="num">10</span> <span class="kw">do</span>
+        Write(f, i * i);             <span class="cm">{ пишем квадраты }</span>
+    Close(f);
+
+    Reset(f);                        <span class="cm">{ открываем для чтения }</span>
+    <span class="kw">while not</span> Eof(f) <span class="kw">do</span>
+    <span class="kw">begin</span>
+        Read(f, num);
+        Write(num, <span class="str">' '</span>);
+    <span class="kw">end</span>;
+    Close(f);
+<span class="kw">end</span>.</pre>
+      </div>
+
+      <div class="question">Что произойдёт если обратиться к файловой переменной после Close?</div>
+      <div class="answer">
+        <div class="warn">Ошибка выполнения! После закрытия память, связанная с файлом, освобождена. То же самое если обратиться до открытия — память ещё не выделена.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     ЛР 11 — УКАЗАТЕЛИ
+════════════════════════════════════════════════════ -->
+
+<div class="section" data-lr="11">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-11">ЛР 11</span>
+    <span class="section-title">Записи (record)</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое запись (record)?</div>
+      <div class="answer">Пользовательский тип данных — набор полей <b>разных типов</b> под одним именем. Как паспорт: в одной структуре хранится имя (string), возраст (integer), пол (перечислимый тип).</div>
+
+      <div class="question">Как объявить и использовать запись?</div>
+      <div class="answer">
+<pre><span class="kw">type</span>
+    <span class="tp">Person</span> = <span class="kw">record</span>
+        Name: <span class="tp">string</span>;
+        Age, Weight: <span class="tp">integer</span>;
+    <span class="kw">end</span>;
+
+<span class="kw">var</span> p: <span class="tp">Person</span>;
+<span class="kw">begin</span>
+    p.Name := <span class="str">'Иванов'</span>;    <span class="cm">{ доступ через точку }</span>
+    p.Age  := <span class="num">20</span>;
+<span class="kw">end</span>.</pre>
+      </div>
+
+      <div class="question">Что такое оператор with и зачем он нужен?</div>
+      <div class="answer">Позволяет обращаться к полям записи без указания имени переменной — сокращает код при работе с несколькими полями подряд.
+<pre><span class="kw">with</span> p <span class="kw">do</span>
+<span class="kw">begin</span>
+    Name := <span class="str">'Васильева'</span>;
+    Age  := <span class="num">22</span>;
+<span class="kw">end</span>;
+<span class="cm">{ Эквивалентно: p.Name := 'Васильева'; p.Age := 22; }</span></pre>
+      </div>
+
+      <div class="question">Можно ли присвоить одну запись другой?</div>
+      <div class="answer">Да. Оператор <code>d := p</code> скопирует все поля из <code>p</code> в <code>d</code>, если они одного типа.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="11">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-11">ЛР 11</span>
+    <span class="section-title">Статическая и динамическая память</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">В чём разница между статической и динамической памятью?</div>
+      <div class="answer">
+        <table>
+          <tr><th></th><th>Статическая</th><th>Динамическая</th></tr>
+          <tr><td>Когда выделяется</td><td>При запуске программы</td><td>Во время выполнения программы</td></tr>
+          <tr><td>Размер</td><td>Фиксированный, известен заранее</td><td>Может меняться по необходимости</td></tr>
+          <tr><td>Доступ</td><td>По имени переменной</td><td>Только через указатель</td></tr>
+          <tr><td>Пример</td><td>var a: array[1..100] of integer</td><td>New(p); p^ := 42;</td></tr>
+        </table>
+      </div>
+
+      <div class="question">Зачем нужна динамическая память?</div>
+      <div class="answer">Когда размер данных неизвестен заранее. Например, список книг: добавляешь по одной — память выделяется по мере необходимости. Массив с заранее заданным размером был бы неудобен.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="11">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-11">ЛР 11</span>
+    <span class="section-title">Указатели: объявление, Nil, разыменование</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое указатель?</div>
+      <div class="answer">Переменная, которая хранит не значение, а <b>адрес ячейки памяти</b>, где лежит значение. Как почтовый адрес — сам адрес не является содержимым квартиры, но позволяет до неё добраться.</div>
+
+      <div class="question">Как объявить указатель?</div>
+      <div class="answer">
+<pre><span class="kw">var</span>
+    p: ^<span class="tp">Integer</span>;      <span class="cm">{ типизированный — указывает только на Integer }</span>
+    q: <span class="tp">Pointer</span>;       <span class="cm">{ нетипизированный — может указывать на что угодно }</span></pre>
+      </div>
+
+      <div class="question">Что такое Nil?</div>
+      <div class="answer">Специальное значение указателя — "не указывает никуда". Аналог <code>null</code>. Используется для обозначения конца списка, начального состояния или пустого результата поиска. Проверка: <code>if p = nil then ...</code></div>
+
+      <div class="question">Как получить значение по указателю (разыменование)?</div>
+      <div class="answer">Через символ <mark>^</mark> после имени указателя: <code>p^</code> — это значение, на которое указывает <code>p</code>.
+<pre><span class="kw">var</span> p: ^<span class="tp">integer</span>;
+<span class="kw">begin</span>
+    New(p);     <span class="cm">{ выделить память }</span>
+    p^ := <span class="num">42</span>;   <span class="cm">{ записать значение }</span>
+    writeln(p^); <span class="cm">{ прочитать значение → 42 }</span>
+    Dispose(p); <span class="cm">{ освободить память }</span>
+<span class="kw">end</span>.</pre>
+      </div>
+
+      <div class="question">Какие три состояния может иметь указатель?</div>
+      <div class="answer">1. <b>Не инициализирован</b> — содержит мусор, обращение опасно. 2. <b>Содержит адрес</b> — после <code>New(p)</code> или <code>p := @x</code>. 3. <b>Nil</b> — явно обнулён, ни на что не указывает.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="11">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-11">ЛР 11</span>
+    <span class="section-title">New, Dispose, GetMem, FreeMem, Mark, Release</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что делает New(p)?</div>
+      <div class="answer">Выделяет блок памяти под переменную того типа, на который указывает <code>p</code>, и сохраняет адрес в <code>p</code>. После этого можно работать с <code>p^</code>.</div>
+
+      <div class="question">Что делает Dispose(p)?</div>
+      <div class="answer">Освобождает память, занятую <code>p^</code>. После вызова значение <code>p</code> становится неопределённым. Если не вызвать — будет <b>утечка памяти</b> (память занята, но недоступна).</div>
+
+      <div class="question">Чем GetMem отличается от New?</div>
+      <div class="answer"><mark>GetMem(p, Size)</mark> выделяет ровно <code>Size</code> байт и возвращает нетипизированный указатель. Используется когда нужен точный контроль над размером. <mark>New</mark> выделяет столько, сколько нужно для типа автоматически.</div>
+
+      <div class="question">Что такое Mark и Release?</div>
+      <div class="answer"><mark>Mark(p)</mark> — запоминает текущее состояние динамической памяти (сохраняет "точку"). <mark>Release(p)</mark> — освобождает всю память, выделенную <b>после</b> вызова Mark. Удобно для массового освобождения памяти.
+<pre>Mark(p);        <span class="cm">{ запомнить точку }</span>
+New(p1); New(p2);
+Release(p);     <span class="cm">{ освободить p1 и p2 сразу }</span></pre>
+      </div>
+
+      <div class="question">Что такое MemAvail и MaxAvail?</div>
+      <div class="answer"><mark>MemAvail</mark> — возвращает общий объём свободной динамической памяти в байтах. <mark>MaxAvail</mark> — размер самого длинного непрерывного свободного участка.</div>
+
+      <div class="question">Что такое Addr и операция @?</div>
+      <div class="answer">Оба возвращают адрес переменной: <code>p := Addr(x)</code> и <code>p := @x</code> — одно и то же. Позволяют указателю "смотреть" на уже существующую статическую переменную.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="11">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-11">ЛР 11</span>
+    <span class="section-title">Однонаправленный список</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое однонаправленный список?</div>
+      <div class="answer">Структура данных, где каждый элемент (узел) содержит <b>данные</b> и <b>указатель на следующий элемент</b>. Перемещение только в одну сторону — от первого к последнему. Последний элемент указывает на <code>nil</code>.</div>
+
+      <div class="question">Как устроен узел списка?</div>
+      <div class="answer">
+<pre><span class="kw">type</span>
+    PBook = ^TBook;       <span class="cm">{ указатель на TBook }</span>
+    TBook = <span class="kw">record</span>
+        title: <span class="tp">string[100]</span>;
+        author: <span class="tp">string[50]</span>;
+        next: <span class="tp">PBook</span>;        <span class="cm">{ ссылка на следующий элемент }</span>
+    <span class="kw">end</span>;</pre>
+      </div>
+
+      <div class="question">Как добавить элемент в конец списка?</div>
+      <div class="answer">
+<pre>New(newNode);            <span class="cm">{ создать новый узел }</span>
+newNode^.data := value;
+newNode^.next := nil;    <span class="cm">{ он последний }</span>
+<span class="cm">{ найти последний элемент и связать: }</span>
+current := head;
+<span class="kw">while</span> current^.next <> nil <span class="kw">do</span>
+    current := current^.next;
+current^.next := newNode;</pre>
+      </div>
+
+      <div class="question">Почему список лучше массива, если размер неизвестен?</div>
+      <div class="answer">Массив требует заранее объявить максимальный размер. Список позволяет добавлять элементы бесконечно — память выделяется под каждый узел отдельно по мере необходимости.</div>
+
+      <div class="question">Что такое утечка памяти и как её избежать?</div>
+      <div class="answer">
+        <div class="warn">Утечка памяти — память выделена (<code>New</code>), но не освобождена (<code>Dispose</code>). Память занята, но программа к ней уже не обращается. При удалении узла из списка обязательно вызывай <code>Dispose</code> на удаляемый узел, а НЕ просто перезаписывай указатель.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     ЛР 12 — МОДУЛИ
+════════════════════════════════════════════════════ -->
+
+<div class="section" data-lr="12">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-12">ЛР 12</span>
+    <span class="section-title">Что такое модуль (unit) и зачем он нужен</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое модуль?</div>
+      <div class="answer">Отдельно компилируемая программная единица, содержащая типы, константы, переменные, процедуры и функции. Модуль позволяет один раз написать код и подключать его в любые программы. Ключевое слово: <mark>unit</mark>.</div>
+
+      <div class="question">Зачем нужны модули?</div>
+      <div class="answer">
+        1. <b>Повторное использование</b> — написал один раз, используешь везде.<br>
+        2. <b>Сокрытие реализации</b> — пользователь видит только интерфейс, детали скрыты в Implementation.<br>
+        3. <b>Структурирование</b> — большая программа делится на логические части.<br>
+        4. <b>Ускорение компиляции</b> — каждый модуль компилируется отдельно.
+      </div>
+
+      <div class="question">Как подключить модуль?</div>
+      <div class="answer">
+<pre><span class="kw">program</span> MyProgram;
+<span class="kw">uses</span> MathUtils, SysUtils;   <span class="cm">{ перечислить через запятую }</span>
+<span class="kw">begin</span>
+    <span class="cm">{ теперь доступны все функции из этих модулей }</span>
+<span class="kw">end</span>.</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="12">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-12">ЛР 12</span>
+    <span class="section-title">Структура модуля: Interface, Implementation, Initialization, Finalization</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Из каких частей состоит модуль?</div>
+      <div class="answer">
+<pre><span class="kw">Unit</span> ИмяМодуля;
+
+<span class="kw">Interface</span>
+    <span class="cm">{ Публичные объявления — видны снаружи }</span>
+    <span class="cm">{ Только заголовки процедур и функций, без тел }</span>
+
+<span class="kw">Implementation</span>
+    <span class="cm">{ Реализация + скрытые (приватные) переменные и подпрограммы }</span>
+
+<span class="kw">Initialization</span>
+    <span class="cm">{ Выполняется ОДИН РАЗ при загрузке модуля (необязательно) }</span>
+
+<span class="kw">Finalization</span>
+    <span class="cm">{ Выполняется при завершении программы (необязательно) }</span>
+
+<span class="kw">End</span>.</pre>
+      </div>
+
+      <div class="question">Что такое раздел Interface?</div>
+      <div class="answer"><b>Публичная часть</b> — всё что видно снаружи. Здесь объявляются типы, константы, переменные и <b>заголовки</b> процедур/функций (без тела). Это "контракт" — что модуль предоставляет пользователю.</div>
+
+      <div class="question">Что такое раздел Implementation?</div>
+      <div class="answer"><b>Закрытая часть</b> — реализация всех функций из Interface. Также может содержать дополнительные переменные и процедуры, которые <b>не видны снаружи</b> (приватные). Заголовки функций можно писать в сокращённой форме, если совпадают с Interface.</div>
+
+      <div class="question">Что делает Initialization?</div>
+      <div class="answer">Выполняется <b>один раз</b> при загрузке модуля (когда программа стартует). Используется для начальной настройки: инициализация переменных, открытие файлов, выделение памяти. Необязателен.</div>
+
+      <div class="question">Что делает Finalization?</div>
+      <div class="answer">Выполняется при <b>завершении программы</b>. Используется для "уборки": закрытие файлов, освобождение памяти, сохранение данных. Необязателен.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="12">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-12">ЛР 12</span>
+    <span class="section-title">Пример модуля + видимость, конфликты имён</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Как выглядит простой модуль?</div>
+      <div class="answer">
+<pre><span class="kw">Unit</span> MathUtils;
+
+<span class="kw">Interface</span>
+    <span class="kw">function</span> <span class="fn">Factorial</span>(n: <span class="tp">integer</span>): <span class="tp">int64</span>;
+    <span class="kw">function</span> <span class="fn">IsPrime</span>(n: <span class="tp">integer</span>): <span class="tp">boolean</span>;
+
+<span class="kw">Implementation</span>
+
+    <span class="kw">function</span> <span class="fn">Factorial</span>(n: <span class="tp">integer</span>): <span class="tp">int64</span>;
+    <span class="kw">begin</span>
+        <span class="kw">if</span> n <= <span class="num">1</span> <span class="kw">then</span> Result := <span class="num">1</span>
+        <span class="kw">else</span> Result := n * Factorial(n-<span class="num">1</span>);
+    <span class="kw">end</span>;
+
+    <span class="kw">function</span> <span class="fn">IsPrime</span>(n: <span class="tp">integer</span>): <span class="tp">boolean</span>;
+    <span class="kw">var</span> i: <span class="tp">integer</span>;
+    <span class="kw">begin</span>
+        Result := n > <span class="num">1</span>;
+        <span class="kw">for</span> i := <span class="num">2</span> <span class="kw">to</span> Trunc(Sqrt(n)) <span class="kw">do</span>
+            <span class="kw">if</span> n <span class="kw">mod</span> i = <span class="num">0</span> <span class="kw">then</span> Result := false;
+    <span class="kw">end</span>;
+
+<span class="kw">End</span>.</pre>
+      </div>
+
+      <div class="question">Что если два модуля содержат функцию с одинаковым именем?</div>
+      <div class="answer">Используется <b>квалифицированное имя</b>: <code>ИмяМодуля.Функция</code>. Собственные идентификаторы модуля имеют приоритет над внешними.
+<pre>MathUtils.Factorial(<span class="num">5</span>);
+StatUtils.Mean(arr);</pre>
+      </div>
+
+      <div class="question">Нужно ли компилировать модуль перед использованием?</div>
+      <div class="answer">Да. Модуль должен быть предварительно скомпилирован. В Lazarus это происходит автоматически при сборке проекта, если файл модуля (.pas) находится в папке проекта.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" data-lr="12">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-12">ЛР 12</span>
+    <span class="section-title">Стандартные модули Pascal</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Какие стандартные модули есть в Free Pascal?</div>
+      <div class="answer">
+        <table>
+          <tr><th>Модуль</th><th>Что содержит</th></tr>
+          <tr><td>System</td><td>Базовые процедуры: Write, Read, Writeln, Readln, New, Dispose и т.д. Подключается автоматически, писать uses System не нужно</td></tr>
+          <tr><td>Crt</td><td>Управление экраном: очистка (ClrScr), позиционирование курсора (GotoXY), цвет текста (TextColor)</td></tr>
+          <tr><td>Math</td><td>Математические функции: Sin, Cos, ArcTan, Exp, Ln, Power, Floor, Ceil</td></tr>
+          <tr><td>SysUtils</td><td>Строки (IntToStr, StrToInt), дата/время, обработка исключений</td></tr>
+          <tr><td>Dos</td><td>Работа с файловой системой DOS: время, дата, каталоги</td></tr>
+          <tr><td>Classes</td><td>Объектно-ориентированное программирование, коллекции</td></tr>
+        </table>
+      </div>
+
+      <div class="question">Нужно ли подключать модуль System явно?</div>
+      <div class="answer">
+        <div class="tip">Нет! System подключается автоматически к каждой программе и модулю. Писать <code>uses System;</code> не нужно.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ЛР 9–12 вопросы из лабораторных загружаются динамически -->
+<div id="lr9-12-questions"></div>
+
+<!-- EXTRA: MOD -->
+<div class="section" data-lr="9">
+  <div class="section-header" onclick="toggle(this)">
+    <span class="lr-badge lr-9">ЛР 9</span>
+    <span class="section-title">Операция MOD и DIV</span>
+    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <div class="section-body">
+    <div class="qa">
+      <div class="question">Что такое MOD и для чего он нужен?</div>
+      <div class="answer"><mark>MOD</mark> — операция получения <b>остатка от деления</b> целых чисел. Например: <code>10 mod 3 = 1</code> (10 делится на 3 с остатком 1). Часто используется для проверки делимости (<code>n mod 2 = 0</code> → чётное), работы с цифрами числа, цикличных структур.</div>
+
+      <div class="question">Что такое DIV?</div>
+      <div class="answer"><mark>DIV</mark> — целочисленное деление (без остатка). Например: <code>10 div 3 = 3</code>. В паре с MOD позволяет "разобрать" число на цифры: <code>542 div 10 = 54</code>, <code>542 mod 10 = 2</code> (последняя цифра).
+<pre><span class="kw">while</span> n > <span class="num">0</span> <span class="kw">do</span>
+<span class="kw">begin</span>
+    digit := n <span class="kw">mod</span> <span class="num">10</span>;  <span class="cm">{ последняя цифра }</span>
+    n := n <span class="kw">div</span> <span class="num">10</span>;     <span class="cm">{ убрать последнюю цифру }</span>
+<span class="kw">end</span>;</pre>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+<script>
+// Загружаем дополнительные вопросы из questions.html
+fetch('questions.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('lr9-12-questions').innerHTML = html;
+    // Переинициализируем фильтрацию после загрузки
+    filterSearch();
+  })
+  .catch(() => {
+    // Если файл не найден — просто ничего не добавляем
+  });
+
+function toggle(header) {
+  header.parentElement.classList.toggle('open');
+}
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const lr = tab.dataset.lr;
+    document.querySelectorAll('.section').forEach(sec => {
+      if (lr === 'all' || sec.dataset.lr === lr) sec.classList.remove('hidden');
+      else sec.classList.add('hidden');
+    });
+    filterSearch();
+  });
+});
+
+const searchEl = document.getElementById('search');
+const noResults = document.getElementById('no-results');
+
+function filterSearch() {
+  const q = searchEl.value.toLowerCase().trim();
+  const activeLr = document.querySelector('.tab.active').dataset.lr;
+  let visible = 0;
+  document.querySelectorAll('.section').forEach(sec => {
+    const lrMatch = activeLr === 'all' || sec.dataset.lr === activeLr;
+    if (!lrMatch) { sec.classList.add('hidden'); return; }
+    if (!q) { sec.classList.remove('hidden'); visible++; return; }
+    if (sec.innerText.toLowerCase().includes(q)) {
+      sec.classList.remove('hidden');
+      sec.classList.add('open');
+      visible++;
+    } else {
+      sec.classList.add('hidden');
+    }
+  });
+  noResults.style.display = visible === 0 ? 'block' : 'none';
+}
+
+searchEl.addEventListener('input', filterSearch);
+</script>
+</body>
+</html>
