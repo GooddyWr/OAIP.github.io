@@ -1563,31 +1563,6 @@ StatUtils.Mean(arr);</pre>
 
 <div id="inject-lr12"></div>
 
-<!-- EXTRA: MOD -->
-<div class="section" data-lr="9">
-  <div class="section-header" onclick="toggle(this)">
-    <span class="lr-badge lr-9">ЛР 9</span>
-    <span class="section-title">Операция MOD и DIV</span>
-    <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
-  </div>
-  <div class="section-body">
-    <div class="qa">
-      <div class="question">Что такое MOD и для чего он нужен?</div>
-      <div class="answer"><mark>MOD</mark> — операция получения <b>остатка от деления</b> целых чисел. Например: <code>10 mod 3 = 1</code> (10 делится на 3 с остатком 1). Часто используется для проверки делимости (<code>n mod 2 = 0</code> → чётное), работы с цифрами числа, цикличных структур.</div>
-
-      <div class="question">Что такое DIV?</div>
-      <div class="answer"><mark>DIV</mark> — целочисленное деление (без остатка). Например: <code>10 div 3 = 3</code>. В паре с MOD позволяет "разобрать" число на цифры: <code>542 div 10 = 54</code>, <code>542 mod 10 = 2</code> (последняя цифра).
-<pre><span class="kw">while</span> n > <span class="num">0</span> <span class="kw">do</span>
-<span class="kw">begin</span>
-    digit := n <span class="kw">mod</span> <span class="num">10</span>;  <span class="cm">{ последняя цифра }</span>
-    n := n <span class="kw">div</span> <span class="num">10</span>;     <span class="cm">{ убрать последнюю цифру }</span>
-<span class="kw">end</span>;</pre>
-      </div>
-    </div>
-  </div>
-</div>
-</main>
-
 <script>
 // Загружаем вопросы из questions.html и вставляем в нужные места
 fetch('questions.html')
