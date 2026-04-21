@@ -211,7 +211,11 @@
   .tp  { color: #e5c07b; }
   .op  { color: #56b6c2; }
 
-  table { width: 100%; border-collapse: collapse; margin: 10px 0 14px; font-size: 13px; }
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 14px; font-size: 13px; min-width: 600px; }
   th {
     background: var(--card); padding: 8px 12px; text-align: left;
     font-weight: 600; font-size: 11px; text-transform: uppercase;
@@ -419,6 +423,8 @@
     <div class="qa">
       <div class="question">Какие типы данных есть в Pascal?</div>
       <div class="answer">
+        <div class="table-container">
+
         <table>
           <tr><th>Группа</th><th>Типы</th></tr>
           <tr><td>Целые</td><td>Byte, ShortInt, Word, SmallInt, Integer, Cardinal, Int64, QWord</td></tr>
@@ -428,6 +434,7 @@
           <tr><td>Структурированные</td><td>Массивы (array), Записи (record), Множества (set), Файлы</td></tr>
           <tr><td>Прочие</td><td>Указатели (Pointer), Процедурный тип</td></tr>
         </table>
+</div>
       </div>
 
       <div class="question">Что значит «порядковый тип»?</div>
@@ -477,6 +484,8 @@ WriteLn(x:<span class="num">12</span>:<span class="num">5</span>);   <span class
     <div class="qa">
       <div class="question">Какие целочисленные типы есть и чем они отличаются?</div>
       <div class="answer">
+        <div class="table-container">
+
         <table>
           <tr><th>Знаковый тип</th><th>Диапазон</th><th>Байт</th><th>Беззнаковый</th><th>Диапазон</th></tr>
           <tr><td>ShortInt</td><td>-128 .. +127</td><td>1</td><td>Byte</td><td>0 .. 255</td></tr>
@@ -484,6 +493,7 @@ WriteLn(x:<span class="num">12</span>:<span class="num">5</span>);   <span class
           <tr><td>Integer</td><td>-2³¹ .. +2³¹-1</td><td>4</td><td>Cardinal</td><td>0 .. +2³²-1</td></tr>
           <tr><td>Int64</td><td>-2⁶³ .. +2⁶³-1</td><td>8</td><td>QWord</td><td>0 .. +2⁶⁴-1</td></tr>
         </table>
+</div>
         <div class="note">Беззнаковые типы не хранят отрицательные числа, зато вмещают вдвое большее положительное число за те же байты.</div>
       </div>
 
@@ -503,6 +513,8 @@ WriteLn(x:<span class="num">12</span>:<span class="num">5</span>);   <span class
     <div class="qa">
       <div class="question">Какие арифметические операторы есть в Pascal?</div>
       <div class="answer">
+        <div class="table-container">
+
         <table>
           <tr><th>Оператор</th><th>Операция</th><th>Применим к</th></tr>
           <tr><td>+</td><td>Сложение</td><td>Целые и вещественные</td></tr>
@@ -512,6 +524,7 @@ WriteLn(x:<span class="num">12</span>:<span class="num">5</span>);   <span class
           <tr><td>div</td><td>Целочисленное деление (без остатка)</td><td>Только целые</td></tr>
           <tr><td>mod</td><td>Остаток от деления</td><td>Только целые</td></tr>
         </table>
+</div>
       </div>
 
       <div class="question">Какой тип у результата арифметической операции?</div>
@@ -539,6 +552,8 @@ WriteLn(x:<span class="num">12</span>:<span class="num">5</span>);   <span class
     <div class="qa">
       <div class="question">Какие вещественные типы есть в Pascal?</div>
       <div class="answer">
+        <div class="table-container">
+
         <table>
           <tr><th>Тип</th><th>Значащих цифр</th><th>Байт</th></tr>
           <tr><td>Single</td><td>7–8</td><td>4</td></tr>
@@ -546,6 +561,7 @@ WriteLn(x:<span class="num">12</span>:<span class="num">5</span>);   <span class
           <tr><td>Extended</td><td>19–20</td><td>10</td></tr>
           <tr><td>Real</td><td>зависит от платформы</td><td>4 или 8</td></tr>
         </table>
+</div>
         Чем больше значащих цифр — тем точнее вычисления, но больше памяти. Для большинства задач достаточно <code>Double</code>.
       </div>
 
@@ -565,6 +581,8 @@ WriteLn(x:<span class="num">12</span>:<span class="num">5</span>);   <span class
     <div class="qa">
       <div class="question">Какие встроенные функции есть для вычислений?</div>
       <div class="answer">
+        <div class="table-container">
+
         <table>
           <tr><th>Функция</th><th>Результат</th><th>Пример</th></tr>
           <tr><td>abs(x)</td><td>Модуль числа</td><td>abs(-5) = 5</td></tr>
@@ -584,6 +602,7 @@ WriteLn(x:<span class="num">12</span>:<span class="num">5</span>);   <span class
           <tr><td>inc(x)</td><td>Увеличить на 1 (x := x+1)</td><td></td></tr>
           <tr><td>dec(x)</td><td>Уменьшить на 1 (x := x-1)</td><td></td></tr>
         </table>
+</div>
       </div>
 
       <div class="question">Как возвести число в произвольную степень?</div>
@@ -646,6 +665,8 @@ WriteLn(x:<span class="num">12</span>:<span class="num">5</span>);   <span class
     <div class="qa">
       <div class="question">Какие операции сравнения есть в Pascal?</div>
       <div class="answer">
+        <div class="table-container">
+
         <table>
           <tr><th>Оператор</th><th>Смысл</th></tr>
           <tr><td>=</td><td>равно</td></tr>
@@ -655,16 +676,20 @@ WriteLn(x:<span class="num">12</span>:<span class="num">5</span>);   <span class
           <tr><td>&gt;</td><td>больше</td></tr>
           <tr><td>&gt;=</td><td>больше или равно</td></tr>
         </table>
+</div>
       </div>
 
       <div class="question">Какие логические операции используются в условиях?</div>
       <div class="answer">
+        <div class="table-container">
+
         <table>
           <tr><th>Операция</th><th>Смысл</th><th>Пример</th></tr>
           <tr><td>and</td><td>И — оба условия должны быть истинны</td><td>(a > 0) and (b > 0)</td></tr>
           <tr><td>or</td><td>ИЛИ — хотя бы одно истинно</td><td>(a = 0) or (b = 0)</td></tr>
           <tr><td>not</td><td>НЕ — отрицание</td><td>not (a = b)</td></tr>
         </table>
+</div>
       </div>
 
       <div class="question">Каков приоритет операций в условиях?</div>
@@ -768,6 +793,8 @@ WriteLn(x:<span class="num">12</span>:<span class="num">5</span>);   <span class
 
       <div class="question">Чем repeat отличается от while?</div>
       <div class="answer">
+        <div class="table-container">
+
         <table>
           <tr><th></th><th>while</th><th>repeat..until</th></tr>
           <tr><td>Проверка условия</td><td>ДО тела</td><td>ПОСЛЕ тела</td></tr>
@@ -775,6 +802,7 @@ WriteLn(x:<span class="num">12</span>:<span class="num">5</span>);   <span class
           <tr><td>Выход из цикла</td><td>когда условие ЛОЖНО</td><td>когда условие ИСТИННО</td></tr>
           <tr><td>begin/end</td><td>нужны для нескольких операторов</td><td>не нужны (repeat/until — скобки)</td></tr>
         </table>
+</div>
       </div>
 
       <div class="question">Когда удобен repeat?</div>
@@ -946,6 +974,8 @@ x := <span class="fn">Ord</span>(c) - <span class="fn">Ord</span>(<span class="s
     <div class="qa">
       <div class="question">Какие функции работы со строками есть в Pascal?</div>
       <div class="answer">
+        <div class="table-container">
+
         <table>
           <tr><th>Функция</th><th>Что делает</th><th>Пример</th></tr>
           <tr><td>Length(s)</td><td>Длина строки</td><td>Length('abc') = 3</td></tr>
@@ -960,6 +990,7 @@ x := <span class="fn">Ord</span>(c) - <span class="fn">Ord</span>(<span class="s
           <tr><td>Val(s, v, err)</td><td>Строка → число с кодом ошибки (err=0 если успех)</td><td></td></tr>
           <tr><td>Str(n, s)</td><td>Число → строка</td><td></td></tr>
         </table>
+</div>
       </div>
 
       <div class="question">Как «вырезать» часть слова и склеить по-новому?</div>
@@ -1134,12 +1165,15 @@ WriteLn(<span class="fn">Copy</span>(s, <span class="num">9</span>, <span class=
 
       <div class="question">Какие виды файловых переменных есть в Pascal?</div>
       <div class="answer">
+        <div class="table-container">
+
         <table>
           <tr><th>Объявление</th><th>Тип</th><th>Применение</th></tr>
           <tr><td>var f: Text</td><td>Текстовый</td><td>Строки, числа как текст</td></tr>
           <tr><td>var f: file of integer</td><td>Типизированный бинарный</td><td>Однородные данные (все Integer, все Real...)</td></tr>
           <tr><td>var f: file</td><td>Нетипизированный бинарный</td><td>Произвольные байты, копирование файлов</td></tr>
         </table>
+</div>
         <div class="warn">Нельзя писать <code>file of string</code>, так как <code>string</code> имеет переменную длину. Нужно создать тип: <code>type Str20 = string[20];</code> и использовать его.</div>
       </div>
     </div>
@@ -1161,12 +1195,15 @@ WriteLn(<span class="fn">Copy</span>(s, <span class="num">9</span>, <span class=
 
       <div class="question">Чем Reset отличается от Rewrite?</div>
       <div class="answer">
+        <div class="table-container">
+
         <table>
           <tr><th>Процедура</th><th>Действие</th><th>Особенность</th></tr>
           <tr><td>Reset(f)</td><td>Открыть для чтения</td><td>Для текстовых — только чтение. Для бинарных — чтение И запись. Файл должен существовать!</td></tr>
           <tr><td>Rewrite(f)</td><td>Открыть для записи</td><td>Создаёт новый файл. Если файл уже есть — УНИЧТОЖАЕТ его содержимое!</td></tr>
           <tr><td>Append(f)</td><td>Открыть для дозаписи</td><td>Только для текстовых. Добавляет в конец, не удаляет старое.</td></tr>
         </table>
+</div>
       </div>
 
       <div class="question">Что такое Close и почему важно его вызывать?</div>
@@ -1313,6 +1350,8 @@ WriteLn(<span class="fn">Copy</span>(s, <span class="num">9</span>, <span class=
     <div class="qa">
       <div class="question">В чём разница между статической и динамической памятью?</div>
       <div class="answer">
+        <div class="table-container">
+
         <table>
           <tr><th></th><th>Статическая</th><th>Динамическая</th></tr>
           <tr><td>Когда выделяется</td><td>При запуске программы</td><td>Во время выполнения программы</td></tr>
@@ -1320,6 +1359,7 @@ WriteLn(<span class="fn">Copy</span>(s, <span class="num">9</span>, <span class=
           <tr><td>Доступ</td><td>По имени переменной</td><td>Только через указатель</td></tr>
           <tr><td>Пример</td><td>var a: array[1..100] of integer</td><td>New(p); p^ := 42;</td></tr>
         </table>
+</div>
       </div>
 
       <div class="question">Зачем нужна динамическая память?</div>
@@ -1581,6 +1621,8 @@ StatUtils.Mean(arr);</pre>
     <div class="qa">
       <div class="question">Какие стандартные модули есть в Free Pascal?</div>
       <div class="answer">
+        <div class="table-container">
+
         <table>
           <tr><th>Модуль</th><th>Что содержит</th></tr>
           <tr><td>System</td><td>Базовые процедуры: Write, Read, Writeln, Readln, New, Dispose и т.д. Подключается автоматически, писать uses System не нужно</td></tr>
@@ -1590,6 +1632,7 @@ StatUtils.Mean(arr);</pre>
           <tr><td>Dos</td><td>Работа с файловой системой DOS: время, дата, каталоги</td></tr>
           <tr><td>Classes</td><td>Объектно-ориентированное программирование, коллекции</td></tr>
         </table>
+</div>
       </div>
 
       <div class="question">Нужно ли подключать модуль System явно?</div>
