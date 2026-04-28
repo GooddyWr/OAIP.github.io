@@ -276,6 +276,46 @@
   p { margin-bottom: 8px; }
   p:last-child { margin-bottom: 0; }
   b { color: var(--text); }
+
+  /* ── Мобильный тоггл шапки ── */
+  .header-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    padding: 5px 10px;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    align-items: center;
+    gap: 5px;
+    transition: all .2s;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .header-toggle:hover { color: var(--text); border-color: #3a3f52; }
+  .header-toggle svg { transition: transform .25s; }
+  .header-collapsed .header-toggle svg { transform: rotate(180deg); }
+
+  .header-collapsible {
+    overflow: hidden;
+    transition: max-height .3s ease, opacity .3s ease;
+    max-height: 500px;
+    opacity: 1;
+  }
+  .header-collapsed .header-collapsible {
+    max-height: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @media (max-width: 640px) {
+    .header-toggle { display: flex; }
+    header { padding: 14px 16px 12px; }
+    h1 { margin-bottom: 0; }
+  }
+
   .title-with-tg {
     display: flex;
     align-items: center;
@@ -317,23 +357,30 @@
           </svg>
           <span>@helloworld_dmg</span>
         </a>
+        <button class="header-toggle" id="headerToggle" onclick="toggleHeader()">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></svg>
+          скрыть
+        </button>
       </h1>
-    <div class="search-wrap">
-      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input id="search" type="text" placeholder="Поиск... например: while, array, string, Assign, procedure, Nil...">
-    </div>
-    <div class="tabs">
-      <button class="tab active" data-lr="all">Все</button>
-      <button class="tab" data-lr="4">ЛР 4 · Переменные</button>
-      <button class="tab" data-lr="5">ЛР 5 · Вычисления</button>
-      <button class="tab" data-lr="6">ЛР 6 · Условия</button>
-      <button class="tab" data-lr="7">ЛР 7 · Циклы</button>
-      <button class="tab" data-lr="8">ЛР 8 · Массивы/Строки</button>
-      <button class="tab" data-lr="9">ЛР 9 · Процедуры</button>
-      <button class="tab" data-lr="10">ЛР 10 · Файлы</button>
-      <button class="tab" data-lr="11">ЛР 11 · Указатели</button>
-      <button class="tab" data-lr="12">ЛР 12 · Модули</button>
-      <button class="tab" data-lr="trpo">ЛР7-8 ТРПО · Графика</button>
+    <div class="header-collapsible" id="headerCollapsible">
+      <div style="height:12px"></div>
+      <div class="search-wrap">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input id="search" type="text" placeholder="Поиск... например: while, array, string, Assign, procedure, Nil...">
+      </div>
+      <div class="tabs">
+        <button class="tab active" data-lr="all">Все</button>
+        <button class="tab" data-lr="4">ЛР 4 · Переменные</button>
+        <button class="tab" data-lr="5">ЛР 5 · Вычисления</button>
+        <button class="tab" data-lr="6">ЛР 6 · Условия</button>
+        <button class="tab" data-lr="7">ЛР 7 · Циклы</button>
+        <button class="tab" data-lr="8">ЛР 8 · Массивы/Строки</button>
+        <button class="tab" data-lr="9">ЛР 9 · Процедуры</button>
+        <button class="tab" data-lr="10">ЛР 10 · Файлы</button>
+        <button class="tab" data-lr="11">ЛР 11 · Указатели</button>
+        <button class="tab" data-lr="12">ЛР 12 · Модули</button>
+        <button class="tab" data-lr="trpo">ЛР7-8 ТРПО · Графика</button>
+      </div>
     </div>
   </div>
 </header>
@@ -1682,6 +1729,15 @@ fetch('questions.html')
 
 function toggle(header) {
   header.parentElement.classList.toggle('open');
+}
+
+function toggleHeader() {
+  const header = document.querySelector('header');
+  const btn = document.getElementById('headerToggle');
+  const isCollapsed = header.classList.toggle('header-collapsed');
+  btn.innerHTML = isCollapsed
+    ? `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg> фильтры`
+    : `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></svg> скрыть`;
 }
 
 // Множественный выбор вкладок
